@@ -1,0 +1,62 @@
+n HashUtility.CombineHash(m_Start.GetHashCode(),
+                m_Duration.GetHashCode(),
+                m_TimeScale.GetHashCode(),
+                m_ClipIn.GetHashCode(),
+                ((int)m_PreExtrapolationMode).GetHashCode(),
+                ((int)m_PostExtrapolationMode).GetHashCode());
+        }
+
+        /// <summary>
+        /// Given a time, returns the weight from the mix out
+        /// </summary>
+        /// <param name="time">Time (relative to the timeline)</param>
+        /// <returns></returns>
+        public float EvaluateMixOut(double time)
+        {
+            if (!clipCaps.HasAny(ClipCaps.Blending))
+                return 1.0f;
+
+            if (mixOutDuration > Mathf.Epsilon)
+            {
+                var perc = (float)(time - mixOutTime) / (float)mixOutDuration;
+                perc = Mathf.Clamp01(mixOutCurve.Evaluate(perc));
+                return perc;
+            }
+            return 1.0f;
+        }
+
+        /// <summary>
+        /// Given a time, returns the weight from the mix in
+        /// </summary>
+        /// <param name="time">Time (relative to the timeline)</param>
+        /// <returns></returns>
+        public float EvaluateMixIn(double time)
+        {
+            if (!clipCaps.HasAny(ClipCaps.Blending))
+                return 1.0f;
+
+            if (mixInDuration > Mathf.Epsilon)
+            {
+                var perc = (float)(time - m_Start) / (float)mixInDuration;
+                perc = Mathf.Clamp01(mixInCurve.Evaluate(perc));
+                return perc;
+            }
+            return 1.0f;
+        }
+
+        static AnimationCurve GetDefaultMixInCurve()
+        {
+            return AnimationCurve.EaseInOut(0, 0, 1, 1);
+        }
+
+        static AnimationCurve GetDefaultMixOutCurve()
+        {
+            return AnimationCurve.EaseInOut(0, 1, 1, 0);
+        }
+
+        /// <summary>
+        /// Converts from global time to a clips local time.
+        /// </summary>
+        /// <param name="time">time relative to the timeline</param>
+        /// <returns>
+       

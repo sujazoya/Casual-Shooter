@@ -9,24 +9,37 @@ public class EnemyHealth : HealthManager
 	public AudioClip deadSound;
 	public AudioClip hitSound;
 	private Vector3 targetRotation;
-	private float health, totalHealth = 100;	
+	[HideInInspector]public float health, totalHealth = 100;	
 	private bool dead;
 	public Image healthImage;
 	Animator animator;
+	[SerializeField] GameObject weapon;
+	[SerializeField] PlayerIKController playerIK;
+	public GameObject[] items;
+	GameController_Grappling gameController;
 	void Awake ()
 	{
 		health = totalHealth;
-		healthImage.fillAmount = 1 / health * totalHealth;
+		UpdateHealthBar();
 	}
     private void Start()
     {
 		animator = GetComponent<Animator>();
-    }
+		gameController = FindObjectOfType<GameController_Grappling>();
+	}
     public bool IsDead { get { return dead; } }
 
 	public override void TakeDamage(Vector3 location, Vector3 direction, float damage)
-	{		
+	{
+        if (health >= damage)
+        {   }
+        else
+        {
+			damage = health;
+		}
 		health -= damage;
+		gameController.ShowExtraHealthSlider(true, this);
+		gameController.ShowPowerup("- " + damage);
 		UpdateHealthBar();
 		if (health <= 0 )
 		{
@@ -37,15 +50,32 @@ public class EnemyHealth : HealthManager
 	}
 	void Kill()
 	{
-		dead = true;
-		if (transform.GetComponent<Collider>()) { transform.GetComponent<Collider>().isTrigger = true; }
-		if (animator) { animator.SetBool("Walk", false); }
-		if (animator) { animator.SetBool("die",true); }
-		if (deadSound)
-		{ AudioSource.PlayClipAtPoint(deadSound, transform.position); }
-		Destroy(gameObject, 3);		
+		if (!dead)
+		{
+			if (weapon) { weapon.SetActive(false); }
+			if (playerIK) { playerIK.ikActive = false; }
+			dead = true;
+			if (transform.GetComponent<Collider>()) { transform.GetComponent<Collider>().isTrigger = true; }
+			if (animator) { animator.SetBool("Walk", false); }
+			if (animator) { animator.SetTrigger("die"); }
+			if (deadSound)
+			{ AudioSource.PlayClipAtPoint(deadSound, transform.position); }
+			Game.currentScore++;
+			ReleaseItem();
+			Destroy(gameObject, 3);
+			gameController.UpdateUI();
+			gameController.ShowKill();
+			gameController.ShowExtraHealthSlider(false, this);
+		}
 	}
-
+	public void ReleaseItem()
+    {
+		int index = Random.Range(0, items.Length);
+        if (items.Length > 0)
+        {
+			Instantiate(items[index], transform.position, Quaternion.identity);
+        }
+    }
 	public void Revive()
 	{
 		
@@ -59,6 +89,6 @@ public class EnemyHealth : HealthManager
 
 	private void UpdateHealthBar()
 	{
-		healthImage.fillAmount = 1 / health * totalHealth;
+		healthImage.fillAmount = Mathf.Clamp(health / totalHealth, 0, 1f);
 	}
 }

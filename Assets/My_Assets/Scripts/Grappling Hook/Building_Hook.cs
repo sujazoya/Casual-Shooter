@@ -13,7 +13,7 @@ public class Building_Hook : MonoBehaviour
     void OnMouseDown()
     {
        
-        if (grapple != null&&!GameController_Grappling.isWeaponActivated)
+        if (grapple != null&&!GameController_Grappling.isWeaponAimed)
         {
            // grapple.target = null;
             grapple.CreateGrapple(this.transform);            

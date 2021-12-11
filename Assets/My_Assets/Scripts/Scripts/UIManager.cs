@@ -30,7 +30,7 @@ public class UIManager : MonoBehaviour
 	//[SerializeField] int sceneOffset;
 	[SerializeField] Text nextLevelText;
 	[SerializeField] Text currentLevelText;
-	[SerializeField] Image progressFillImage;
+	//[SerializeField] Image progressFillImage;
 
 	[Space]
 	[SerializeField] Text levelCompletedText;
@@ -52,11 +52,11 @@ public class UIManager : MonoBehaviour
 	void Start ()
 	{
 		//reset progress value
-		progressFillImage.fillAmount = 0f;	
-		if (Game.retryCount == 0)
-        {
-			ShowUI(Game.Menu);
-		}
+		//progressFillImage.fillAmount = 0f;	
+		//if (Game.retryCount == 0)
+  //      {
+		//	ShowUI(Game.Menu);
+		//}
 		pauseButton.onClick.AddListener(OnPause);
 		player = FindObjectOfType<Jumping_Ball>();
 	}
@@ -141,7 +141,7 @@ public class UIManager : MonoBehaviour
 
 		yield return new WaitForSeconds(1.2f);
 		//StartCoroutine(ActiveBack(true, 0));
-		Game.retryCount=0;
+		//Game.retryCount=0;
 		Text High_Score_num = UIObject(Game.Gameover).transform.Find("High_Score_num").GetComponent<Text>();
 		Text header = UIObject(Game.Gameover).transform.Find("header").GetComponent<Text>();
 	    Text coin_num = UIObject(Game.Gameover).transform.Find("coin_num").GetComponent<Text>();
@@ -174,7 +174,7 @@ public class UIManager : MonoBehaviour
 	IEnumerator LevelWon()
 	{
 		yield return new WaitForSeconds(.2f);		
-		Game.retryCount = 0;
+		//Game.retryCount = 0;
 		Button retryButton = UIObject(Game.GameWin).transform.Find("Retry").GetComponent<Button>();
 		retryButton.onClick.AddListener(RetryLevel);
 		Button homeButton = UIObject(Game.GameWin).transform.Find("home").GetComponent<Button>();
@@ -186,7 +186,7 @@ public class UIManager : MonoBehaviour
 	}
 	public void RetryLevel()
     {
-		Game.retryCount++;
+		//Game.retryCount++;
 		SceneManager.LoadScene (SceneManager.GetActiveScene ().buildIndex);		
     }
 	IEnumerator Retry()
@@ -194,10 +194,10 @@ public class UIManager : MonoBehaviour
 	
 		yield return new WaitForSeconds(2);
         //SceneManager.LoadScene (SceneManager.GetActiveScene ().buildIndex);
-        if (Game.retryCount > 0)
-        {
-			//levelHanler.ActivateLevel(Game.CurrentLevel);
-		}
+  //      if (Game.retryCount > 0)
+  //      {
+		//	//levelHanler.ActivateLevel(Game.CurrentLevel);
+		//}
 		
 	}
 	void OnResume()

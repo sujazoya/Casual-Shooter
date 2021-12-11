@@ -12,7 +12,7 @@ public class AimBehaviour : GenericBehaviour
 	public Vector3 aimCamOffset   = new Vector3(0f, 0.4f, -0.7f);         // Offset to relocate the camera when aiming.
 
 	private int aimBool;                                                  // Animator variable related to aiming.
-	private bool aim;                                                     // Boolean to determine whether or not the player is aiming.
+	[HideInInspector]public bool aim;                                                     // Boolean to determine whether or not the player is aiming.
 	private int cornerBool;                                               // Animator variable related to cover corner..
 	private bool peekCorner;                                              // Boolean to get whether or not the player is on a cover corner.
 	private Vector3 initialRootRotation;                                  // Initial root bone local rotation.
@@ -32,6 +32,7 @@ public class AimBehaviour : GenericBehaviour
 		initialRootRotation = behaviourManager.GetAnim.GetBoneTransform(HumanBodyBones.Hips).parent.localEulerAngles;
 		initialHipsRotation = behaviourManager.GetAnim.GetBoneTransform(HumanBodyBones.Hips).localEulerAngles;
 		initialSpineRotation = behaviourManager.GetAnim.GetBoneTransform(HumanBodyBones.Spine).localEulerAngles;
+		aimButton.SetActive(false);
 	}
 
 	// Update is used to set features regardless the active behaviour.
@@ -40,6 +41,7 @@ public class AimBehaviour : GenericBehaviour
 		peekCorner = behaviourManager.GetAnim.GetBool(cornerBool);
         if (haveWeapon)
         {
+			aimButton.SetActive(true);
 			// Activate/deactivate aim by input.
 			if (Input.GetMouseButtonDown(1) || CrossPlatformInputManager.GetButtonDown("aim") && !aim)
 			{
@@ -50,8 +52,10 @@ public class AimBehaviour : GenericBehaviour
 				StartCoroutine(ToggleAimOff());
 			}
 		}
+		aimButton.SetActive(false);
 		// No sprinting while aiming.
 		canSprint = !aim;
+		GameController_Grappling.isWeaponAimed = aim;
         if (lazer) { lazer.SetActive(aim); }
 		// Toggle camera aim position left or right, switching shoulders.
 		if (aim && Input.GetKeyDown (KeyCode.N)||CrossPlatformInputManager.GetButtonDown("shoulder") && !peekCorner)

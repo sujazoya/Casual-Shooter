@@ -49,7 +49,7 @@ public class ShootBehaviour : GenericBehaviour
 	private bool isShooting = false;                               // Boolean to determine if player is holding shoot button.
 	private bool isChangingWeapon = false;                         // Boolean to determine if player is holding change weapon button.
 	private bool isShotAlive = false;                              // Boolean to determine if there is any active shot on scene.
-
+	GameController_Grappling gameController;
 	// Start is always called after any Awake functions.
 	void Start()
 	{
@@ -98,24 +98,38 @@ public class ShootBehaviour : GenericBehaviour
 		shotDecay = originalShotDecay;
 		castRelativeOrigin = neck.position - this.transform.position;
 		distToHand = (rightHand.position - neck.position).magnitude * 1.5f;
-		shotMask = ~((1 << LayerMask.NameToLayer("Ignore Shot")) | 1 << LayerMask.NameToLayer("Ignore Raycast"));
+		shotMask = ~((1 << LayerMask.NameToLayer("Enemy")) | 1 << LayerMask.NameToLayer("Ignore Raycast"));
+		gameController = FindObjectOfType<GameController_Grappling>();
 	}
 
 	// Update is used to set features regardless the active behaviour.
 	private void Update()
 	{
-		// Handle shoot weapon action.
-		if (Input.GetMouseButton(0)||CrossPlatformInputManager.GetButton("shoot") && !isShooting && activeWeapon > 0 && burstShotCount == 0)
+		if (!Application.isMobilePlatform)
+		{
+			if (Input.GetMouseButton(0) && !isShooting && activeWeapon > 0 && burstShotCount == 0)
+			{
+				isShooting = true;
+				ShootWeapon(activeWeapon);
+			}
+			else if (isShooting && Input.GetMouseButton(0))
+			{
+				isShooting = false;
+			}
+		}
+					// Handle shoot weapon action.
+		if (CrossPlatformInputManager.GetButton("shoot") && !isShooting && activeWeapon > 0 && burstShotCount == 0)
 		{
 			isShooting = true;
 			ShootWeapon(activeWeapon);
 		}
-		else if (isShooting && Input.GetMouseButton(0) || CrossPlatformInputManager.GetButton("shoot"))
+		else if (isShooting && CrossPlatformInputManager.GetButton("shoot"))
 		{
 			isShooting = false;
 		}
+		
 		// Handle relad weapon action.
-		else if (Input.GetKeyDown(KeyCode.R)|| CrossPlatformInputManager.GetButtonDown("reload") && activeWeapon > 0)
+		 if (Input.GetKeyDown(KeyCode.R)|| CrossPlatformInputManager.GetButtonDown("reload") && activeWeapon > 0)
 		{
 			if (weapons[activeWeapon].StartReload())
 			{
@@ -177,7 +191,7 @@ public class ShootBehaviour : GenericBehaviour
 			Ray ray = new Ray(behaviourManager.playerCamera.position, behaviourManager.playerCamera.forward + imprecision);
 			RaycastHit hit = default(RaycastHit);
 			// Target was hit.
-			if (Physics.Raycast(ray, out hit, 500f, shotMask))
+			if (Physics.Raycast(ray, out hit, 500f, enemyLayer))
 			{
 				if (hit.collider.transform != this.transform)
 				{
@@ -216,10 +230,16 @@ public class ShootBehaviour : GenericBehaviour
 		{
 			if (hit.collider.transform != this.transform)
 			{
-                if (hit.transform.tag == "Grapple")
+                if (hit.transform.tag == Game.enemyTag)
                 {
 					aimBehaviour.crosshair = crosshair_red;
-                }
+					gameController.ShowExtraHealthSlider(true,hit.transform.GetComponent<EnemyHealth>());
+				}
+                else
+                {
+					aimBehaviour.crosshair = aimCrosshair;
+					gameController.ShowExtraHealthSlider(false, hit.transform.GetComponent<EnemyHealth>());
+				}
 			}
 		}
 	}
@@ -231,9 +251,9 @@ public class ShootBehaviour : GenericBehaviour
 
 		// Draw the flash at the gun muzzle position.
 		muzzleFlash.SetActive(true);
-		muzzleFlash.transform.SetParent(gunMuzzle);
-		muzzleFlash.transform.localPosition = Vector3.zero;
-		muzzleFlash.transform.localEulerAngles = Vector3.back * 90f;
+		//muzzleFlash.transform.SetParent(gunMuzzle);
+		//muzzleFlash.transform.localPosition = Vector3.zero;
+		//muzzleFlash.transform.localEulerAngles = Vector3.back * 90f;
 
 		// Create the shot tracer and smoke trail particle.
 		GameObject instantShot = Object.Instantiate<GameObject>(shot);

@@ -84,8 +84,8 @@ public class InteractiveWeapon : MonoBehaviour
 		fullMag = mag;
 		maxBullets = totalBullets;
 		pickupHUD.gameObject.SetActive(false);
-        if (lazer)  { lazer.SetActive(true); }
-		if (muzzle) { muzzle.SetActive(true); }
+        if (lazer)  { lazer.SetActive(false); }
+		if (muzzle) { muzzle.SetActive(false); }
 	}
     private void Start()
     {
@@ -103,7 +103,7 @@ public class InteractiveWeapon : MonoBehaviour
 	void Update()
 	{
 		// Handle player pick weapon action.
-		if (this.pickable && Input.GetKeyDown(KeyCode.E) || CrossPlatformInputManager.GetButtonDown("pickup"))
+		if (this.pickable && Input.GetKeyDown(KeyCode.E) || this.pickable && CrossPlatformInputManager.GetButtonDown("pickup"))
 		{
 			// Disable weapon physics.
 			rbody.isKinematic = true;
@@ -129,7 +129,18 @@ public class InteractiveWeapon : MonoBehaviour
 				gameController_Grappling.SetActive(gameController_Grappling.items.aimButton, true, 0);
 
 			}
-            if (lazer) { transform.root.GetComponent<AimBehaviour>().lazer = lazer; }
+
+            if (lazer) {
+				lazer.SetActive(true); 
+				transform.root.GetComponent<AimBehaviour>().lazer = lazer;
+				lazer.SetActive(false);
+			}
+			if (muzzle)
+			{
+				muzzle.SetActive(true);
+				transform.root.GetComponent<ShootBehaviour>().muzzleFlash = muzzle;
+				muzzle.SetActive(false);
+			}
 
 		}
 	}

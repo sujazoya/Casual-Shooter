@@ -14,13 +14,19 @@ public class MyItems
     public Sprite[] menu_sprites;
     public GameObject aimButton;
     public GameObject bulletTrail;
+    public GameObject killEffect;
+    public Text coinText;
+    public Text diemondText;
+    public Text scoreText;
+    public GameObject extraHealthSlider;
+    public Image extraHealthfill;
 }
 
 public class GameController_Grappling : MonoBehaviour
 {
     public MyItems items;
     public static GameController_Grappling Instace;
-    public static bool isWeaponActivated;
+    public static bool isWeaponAimed;
     public GameObject currentBuilding;
     int pwTIndex;
     [HideInInspector] public List<GameObject> bulletTrails;
@@ -36,6 +42,7 @@ public class GameController_Grappling : MonoBehaviour
         }
         ShoeMenu();
         items.menu_Button.onClick.AddListener(ShoeMenu);
+        UpdateUI();
     }
     void CreatBullerails()
     {
@@ -50,6 +57,20 @@ public class GameController_Grappling : MonoBehaviour
         {
             bulletTrails[i].SetActive(false);
         }
+    }
+    public void ShowExtraHealthSlider(bool value ,EnemyHealth enemyHealth)
+    {
+        
+         if( value == false)
+        {
+            items.extraHealthSlider.SetActive(false);
+        }
+        else       
+        {
+            items.extraHealthSlider.SetActive(true);
+            items.extraHealthfill.fillAmount = Mathf.Clamp(enemyHealth.health / enemyHealth.totalHealth, 0, 1f);
+        }
+
     }
     public void PickupButton(bool value)
     {
@@ -96,11 +117,26 @@ public class GameController_Grappling : MonoBehaviour
             btIndex = 0;
         }
     }
+    public void UpdateUI()
+    {
+        items.scoreText  .text     = Game.currentScore.ToString();
+        items.coinText   .text     = Game.TotalCoins.ToString();
+        items.diemondText.text     = Game.TotalDiemonds.ToString();
+    }
+    public void ShowKill()
+    {
+        items.killEffect.SetActive(true);
+    }
 
-    public void ShowPowerup(int count)
+    public void ShowPowerup(string count)
     {
         SetActive(items.powerup_Texts[pwTIndex], true, 0);
-        items.powerup_Texts[pwTIndex].GetComponent<Text>().text = count.ToString();
+        items.powerup_Texts[pwTIndex].GetComponent<Text>().text = count;
+        pwTIndex++;
+        if(pwTIndex>= items.powerup_Texts.Length)
+        {
+            pwTIndex = 0;
+        }
     }
     public void SetActive(GameObject Object,  bool value,float wait)
     {

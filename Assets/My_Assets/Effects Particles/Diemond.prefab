@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 19899064}
   - component: {fileID: 19970752}
   m_Layer: 0
-  m_Name: GemTriPinkBlast
+  m_Name: Diemond
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -151,8 +151,8 @@ ParticleSystem:
     startSpeed:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 2
-      minScalar: 1
+      scalar: 5
+      minScalar: 2
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -904,7 +904,7 @@ ParticleSystem:
       countCurve:
         serializedVersion: 2
         minMaxState: 0
-        scalar: 14
+        scalar: 8
         minScalar: 25
         maxCurve:
           serializedVersion: 2

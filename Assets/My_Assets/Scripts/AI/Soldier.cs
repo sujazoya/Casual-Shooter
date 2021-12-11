@@ -113,7 +113,7 @@ public class Soldier : MonoBehaviour
                     //anim.SetBool("Attack", true);
                 }                         
                 transform.LookAt(player);
-                if(Forward() && shoot)
+                if(Forward() && shoot&&player.GetComponent<PlayerHealth>().health>0)
                 {                   
                     StartCoroutine(Shoot());
                 }

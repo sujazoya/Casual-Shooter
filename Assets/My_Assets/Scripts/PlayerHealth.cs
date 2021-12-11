@@ -28,8 +28,8 @@ public class PlayerHealth : MonoBehaviour
     }
     void UpdateHealth()
     {
-        healthText.text = health.ToString();
-        healthImage.fillAmount = 1 / 100 * health;
+        healthText.text = health.ToString();       
+        healthImage.fillAmount = Mathf.Clamp(health / maxHealth, 0, 1f);
     }
     IEnumerator MakeDamages(float damage, float wait)
     {

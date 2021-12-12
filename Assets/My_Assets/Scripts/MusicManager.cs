@@ -6,32 +6,39 @@ using UnityEngine.UI;
 public class MusicManager : MonoBehaviour
 {
     [Header("Every Musib Need Unique Key")]
-	public  string musicKey;
-	public static string currentMusicKey;   
-    public AudioClip[] music;					// list of available music tracks
+	public  string musicKey;	
+	public static string currentMusicKey;	
+	public AudioClip[] music;					// list of available music tracks
     private AudioSource musicAudio;				// AudioSource component for playing music
-    [SerializeField] Button[] musicButton;
-    public static MusicManager musicManager;
+    [SerializeField] Button[] musicButton;	
+	public static MusicManager musicManager;
 	[SerializeField] GameObject[] offGameobject;
-	// Start is called before the first frame update
+	[Header("Sounds")]
+	public string soundKey;
+	public static string currentSoundKey;
+	public AudioClip[] sounds;                  // list of available sound clips
+	[SerializeField] Button[] soundButton;
+	[SerializeField] GameObject[] soundOffGameobject;
+	public static AudioSource sfxAudio;               // AudioSource component for playing sound fx.
+
 	void Awake()
     {
 		currentMusicKey = musicKey;
+		currentSoundKey = soundKey;
 		if (musicManager != null)
 		{
 			Debug.LogError("More than one SoundManager found in the scene");
 			return;
 		}
 		musicManager = this;
-		
-		if(!GetComponent <AudioSource>())
-        {
-			musicAudio = gameObject.AddComponent<AudioSource>();
-        }
-        else
-        {
-			musicAudio=GetComponent<AudioSource>();
-		}				
+
+		sfxAudio = gameObject.AddComponent<AudioSource>();
+		musicAudio = gameObject.AddComponent<AudioSource>();
+
+		sfxAudio.playOnAwake = false;
+		musicAudio.playOnAwake = false;
+		musicAudio.loop = true;
+
 		musicAudio.playOnAwake = false;
 		musicAudio.loop = true;
         if (musicButton.Length > 0)
@@ -59,8 +66,32 @@ public class MusicManager : MonoBehaviour
 				}				
 			}
 		}
+		if (soundButton.Length > 0)
+		{
+			for (int i = 0; i < soundButton.Length; i++)
+			{
+				soundButton[i].onClick.AddListener(ToggleSound);
+			}
+		}
+		if (soundOffGameobject.Length > 0)
+		{
+			if (!PlayerPrefs.HasKey(soundKey))
+			{
+				for (int i = 0; i < soundOffGameobject.Length; i++)
+				{
+					soundOffGameobject[i].SetActive(true);
+				}
 
-    }
+			}
+			else
+			{
+				for (int i = 0; i < soundOffGameobject.Length; i++)
+				{
+					soundOffGameobject[i].SetActive(false);
+				}
+			}
+		}
+	}
 	public void ToggleMusic(AudioSource musicName)
 	{
 		if (!PlayerPrefs.HasKey(musicKey))
@@ -123,8 +154,43 @@ public class MusicManager : MonoBehaviour
 			}
 		}
 	}
+	void ToggleSound()
+	{
+		if (!PlayerPrefs.HasKey(soundKey))
+		{
+			PlayerPrefs.SetString(soundKey, soundKey);
+			currentSoundKey = soundKey;
+			//sfxAudio.Stop();
+			if (soundOffGameobject.Length > 0)
+			{
+				for (int i = 0; i < soundOffGameobject.Length; i++)
+				{
+					soundOffGameobject[i].SetActive(true);
 
-    public static void PlayMusic(string trackName)
+				}
+			}
+
+		}
+		else
+		{
+			PlayerPrefs.DeleteKey(soundKey);
+			currentSoundKey = string.Empty;
+			//sfxAudio.Play();
+			if (soundOffGameobject.Length > 0)
+			{
+				for (int i = 0; i < soundOffGameobject.Length; i++)
+				{
+					soundOffGameobject[i].SetActive(false);
+				}
+			}
+		}
+	}
+	public static IEnumerator PlayMusic(string trackName,float wait)
+    {
+		yield return new WaitForSeconds(wait);
+		PlayMusic(trackName);
+	}
+	public static void PlayMusic(string trackName)
     {
         if (musicManager == null)
         {
@@ -224,5 +290,19 @@ public class MusicManager : MonoBehaviour
 
 		// once we've fully faded out, pause the track
 		musicAudio.Pause();
+	}
+	public static void PlaySfx(string sfxName)
+	{
+        if (!PlayerPrefs.HasKey(currentSoundKey))
+        {
+			if (musicManager == null)
+			{
+				Debug.LogWarning("Attempt to play a sound with no SoundManager in the scene");
+				return;
+			}
+
+			musicManager.PlaySound(sfxName, musicManager.sounds, sfxAudio);
+		}
+		
 	}
 }

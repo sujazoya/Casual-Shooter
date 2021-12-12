@@ -227,20 +227,14 @@ public class ShootBehaviour : GenericBehaviour
 		Ray ray = new Ray(behaviourManager.playerCamera.position, behaviourManager.playerCamera.forward);
 		RaycastHit hit = default(RaycastHit);
 		if (Physics.Raycast(ray, out hit, 500f, enemyLayer))
-		{
-			if (hit.collider.transform != this.transform)
-			{
-                if (hit.transform.tag == Game.enemyTag)
-                {
-					aimBehaviour.crosshair = crosshair_red;
-					gameController.ShowExtraHealthSlider(true,hit.transform.GetComponent<EnemyHealth>());
-				}
-                else
-                {
-					aimBehaviour.crosshair = aimCrosshair;
-					gameController.ShowExtraHealthSlider(false, hit.transform.GetComponent<EnemyHealth>());
-				}
-			}
+		{	
+			aimBehaviour.crosshair = crosshair_red;
+        	gameController.ShowExtraHealthSlider(true,hit.transform.GetComponent<EnemyHealth>());
+
+		}else
+        {
+			aimBehaviour.crosshair = aimCrosshair;
+			gameController.items.extraHealthSlider.SetActive(false);
 		}
 	}
 	// Manage the shot visual effects.

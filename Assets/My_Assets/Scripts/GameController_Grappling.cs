@@ -18,8 +18,11 @@ public class MyItems
     public Text coinText;
     public Text diemondText;
     public Text scoreText;
+    public Text lifeText;
     public GameObject extraHealthSlider;
     public Image extraHealthfill;
+    public GameObject StartPlay;
+    public Text number;
 }
 
 public class GameController_Grappling : MonoBehaviour
@@ -30,6 +33,7 @@ public class GameController_Grappling : MonoBehaviour
     public GameObject currentBuilding;
     int pwTIndex;
     [HideInInspector] public List<GameObject> bulletTrails;
+    UIManager uIManager;
     private void Awake()
     {
         if (Instace == null)
@@ -43,6 +47,26 @@ public class GameController_Grappling : MonoBehaviour
         ShoeMenu();
         items.menu_Button.onClick.AddListener(ShoeMenu);
         UpdateUI();
+    }
+    public void Play()
+    {          
+        uIManager.ShowUI(Game.HUD);
+        StartCoroutine(LatePlay());
+        MusicManager.PauseMusic(0.1f);
+    }
+    IEnumerator LatePlay()
+    {
+        yield return new WaitForSeconds(2.5f);
+        items.StartPlay.SetActive(true);
+        items.number.text = "1";
+        yield return new WaitForSeconds(1f);
+        items.number.text = "2";
+        yield return new WaitForSeconds(1f);
+        items.number.text = "3";
+        yield return new WaitForSeconds(3f);
+        items.StartPlay.SetActive(false);
+        Game.gameStatus = Game.GameStatus.isPlaying;
+        MusicManager.PlayMusic("Gameloop-16");
     }
     void CreatBullerails()
     {
@@ -72,17 +96,24 @@ public class GameController_Grappling : MonoBehaviour
         }
 
     }
+    public static bool onWeaponTriggerEnter;
     public void PickupButton(bool value)
     {
         if (value == true)
         {
             items.pickupButton.GetComponent<Animator>().SetBool("open", true);
             items.pickupButton.GetComponent<Animator>().SetBool("close", false);
+            if (!MusicManager.sfxAudio.isPlaying && onWeaponTriggerEnter)
+            {
+                MusicManager.PlaySfx("inter");
+            }
+           
         }
         else
         {
             items.pickupButton.GetComponent<Animator>().SetBool("open", false);
-            items.pickupButton.GetComponent<Animator>().SetBool("close", true);
+            items.pickupButton.GetComponent<Animator>().SetBool("close", true);            
+            MusicManager.PlaySfx("Interface");                      
         }
       
     }
@@ -95,12 +126,14 @@ public class GameController_Grappling : MonoBehaviour
             items.menu.GetComponent<Animator>().SetBool("open", true);
             items.menu.GetComponent<Animator>().SetBool("close", false);
             items.menu_Button.GetComponent<Image>().sprite = items.menu_sprites[1];
+            MusicManager.PlaySfx("inter");
         }
         else
         {
             items.menu.GetComponent<Animator>().SetBool("open", false);
             items.menu.GetComponent<Animator>().SetBool("close", true);
             items.menu_Button.GetComponent<Image>().sprite = items.menu_sprites[0];
+            MusicManager.PlaySfx("Interface");
         }       
        
 
@@ -122,6 +155,7 @@ public class GameController_Grappling : MonoBehaviour
         items.scoreText  .text     = Game.currentScore.ToString();
         items.coinText   .text     = Game.TotalCoins.ToString();
         items.diemondText.text     = Game.TotalDiemonds.ToString();
+        items.lifeText   .text     = Game.Life.ToString();
     }
     public void ShowKill()
     {
@@ -151,6 +185,7 @@ public class GameController_Grappling : MonoBehaviour
     void Start()
     {
         CreatBullerails();
+        uIManager = FindObjectOfType<UIManager>();
     }
     public void DestroyCurrentBuilding()
     {

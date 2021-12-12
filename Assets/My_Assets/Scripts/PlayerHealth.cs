@@ -10,11 +10,13 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField] Image healthImage;
     public float health;
     float maxHealth=100;
+    UIManager uIManager;
     // Start is called before the first frame update
     void Start()
     {
         health = maxHealth;
         UpdateHealth();
+        uIManager = FindObjectOfType<UIManager>();
     }
 
     // Update is called once per frame
@@ -45,5 +47,9 @@ public class PlayerHealth : MonoBehaviour
             yield return new WaitForSeconds(0.4f);
             hit.SetActive(false);
         }
+    }
+    void Die()
+    {
+        uIManager.OnGameover();
     }
 }

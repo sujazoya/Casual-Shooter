@@ -86,11 +86,13 @@ public class BuildingManager : MonoBehaviour
         return index;
     }
     Vector3 pos;
+    float minPose = -750;
+    float mAXPose =  750;
     Vector3 PosForNewBuilding()
     {
-        pos.x = Random.Range(transform.position.x + 750, transform.position.x - 750);
+        pos.x = Random.Range(minPose, mAXPose);
         pos.y = Random.Range(10, -10);
-        pos.z = Random.Range(transform.position.z + 750, transform.position.z - 750);
+        pos.z = Random.Range(minPose, mAXPose);
         return pos;
     }
     [HideInInspector]public Collider[] hitColliders;

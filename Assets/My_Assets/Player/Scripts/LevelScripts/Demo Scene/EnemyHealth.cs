@@ -37,8 +37,7 @@ public class EnemyHealth : HealthManager
         {
 			damage = health;
 		}
-		health -= damage;
-		gameController.ShowExtraHealthSlider(true, this);
+		health -= damage;		
 		gameController.ShowPowerup("- " + damage);
 		UpdateHealthBar();
 		if (health <= 0 )
@@ -64,8 +63,7 @@ public class EnemyHealth : HealthManager
 			ReleaseItem();
 			Destroy(gameObject, 3);
 			gameController.UpdateUI();
-			gameController.ShowKill();
-			gameController.ShowExtraHealthSlider(false, this);
+			gameController.ShowKill();			
 		}
 	}
 	public void ReleaseItem()

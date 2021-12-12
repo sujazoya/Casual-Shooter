@@ -55,7 +55,8 @@ public class UIManager : MonoBehaviour
 		//progressFillImage.fillAmount = 0f;	
 		//if (Game.retryCount == 0)
   //      {
-		//	ShowUI(Game.Menu);
+		ShowUI(Game.Menu);
+	    StartCoroutine(MusicManager.PlayMusic("menu",2));
 		//}
 		pauseButton.onClick.AddListener(OnPause);
 		player = FindObjectOfType<Jumping_Ball>();
@@ -69,7 +70,7 @@ public class UIManager : MonoBehaviour
 	}
 	void PlayButtonClip()
     {
-		SoundManager.PlaySfx("button");		
+		MusicManager.PlaySfx("button");		
     }
 
 	public GameObject UIObject(string name)
@@ -114,7 +115,7 @@ public class UIManager : MonoBehaviour
 				allButtons[i].onClick.AddListener(PlayButtonClip);
 			}
         }
-		AdmobAdmanager.Instance.ShowInterstitial();
+		//AdmobAdmanager.Instance.ShowInterstitial();
 	}
 
 	//--------------------------------------
@@ -131,14 +132,13 @@ public class UIManager : MonoBehaviour
 	}	
 	public void OnGameover()
     {
-
+		Game.gameStatus = Game.GameStatus.isGameover;
 		ShowUI(Game.Gameover);
 		StartCoroutine(Gameover());
 		MusicManager.PauseMusic(0.2f); 
 	}
 	IEnumerator Gameover()
-    {
-
+    {		
 		yield return new WaitForSeconds(1.2f);
 		//StartCoroutine(ActiveBack(true, 0));
 		//Game.retryCount=0;
@@ -159,12 +159,15 @@ public class UIManager : MonoBehaviour
         {
 			header.text = "New Score";
 			Game.HighScore = Game.currentScore;
+			MusicManager.PlaySfx("new_score");
 		}
         else
         {
 			header.text = "Gameover";
+			MusicManager.PlaySfx("gameover");
 		}
 	}
+	
 	public void OnLevelWon()
 	{
 		StartCoroutine(ActiveBack(true, 1.5f));
@@ -204,15 +207,15 @@ public class UIManager : MonoBehaviour
     {
 		Game.gameStatus = Game.GameStatus.isPlaying;
 		ShowUI(Game.HUD);
-		MusicManager.PlayMusic("Music1");
-		StartCoroutine(ActiveBack(false, 1));
+		MusicManager.PlayMusic("Gameloop-16");
+		//StartCoroutine(ActiveBack(false, 1));
 	}
 	void OnPause()
     {
 		Game.gameStatus = Game.GameStatus.isPaused;
 		ShowUI(Game.Pause);
 		MusicManager.PauseMusic(0.2f);
-		StartCoroutine(ActiveBack(true, 0.7f));
+		//StartCoroutine(ActiveBack(true, 0.7f));
 		StartCoroutine(Pause());
 	}
 	IEnumerator Pause()

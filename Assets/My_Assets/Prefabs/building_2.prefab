@@ -1135,8 +1135,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73cb76b756403ed489e68df03b4be32f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  deadSound: {fileID: 0}
-  hitSound: {fileID: 0}
+  deadSound: {fileID: 8300000, guid: fac6d11787d02f3418880b52336f22fc, type: 3}
+  hitSound: {fileID: 8300000, guid: 2d83261c75a12374284c03e75ed767d0, type: 3}
+  health: 0
+  totalHealth: 100
   healthImage: {fileID: 1801412490}
   weapon: {fileID: 8619338778343805961}
   playerIK: {fileID: 0}

@@ -141,7 +141,7 @@ public class InteractiveWeapon : MonoBehaviour
 				transform.root.GetComponent<ShootBehaviour>().muzzleFlash = muzzle;
 				muzzle.SetActive(false);
 			}
-
+			MusicManager.PlaySfx("button");
 		}
 	}
 
@@ -151,6 +151,7 @@ public class InteractiveWeapon : MonoBehaviour
 		if(collision.collider.gameObject != player && Vector3.Distance(transform.position, player.transform.position) <= 5f)
 		{
 			AudioSource.PlayClipAtPoint(dropSound, transform.position, 0.5f);
+			GameController_Grappling.onWeaponTriggerEnter = true;
 		}
 	}
 
@@ -159,8 +160,10 @@ public class InteractiveWeapon : MonoBehaviour
 	{
 		if (other.gameObject == player)
 		{
+			GameController_Grappling.onWeaponTriggerEnter = false;
 			pickable = false;
 			gameController_Grappling.PickupButton(false);
+			
 			//TooglePickupHUD(false);
 		}
 	}
@@ -218,7 +221,8 @@ public class InteractiveWeapon : MonoBehaviour
 		CreateInteractiveRadius(col.center);
 		this.col.enabled = true;
 		weaponHud.Toggle(false);
-        
+		MusicManager.PlaySfx("button");
+
 	}
 
 	// Start the reload action (called by shoot behaviour).

@@ -47,6 +47,10 @@ public class PlayerHealth : MonoBehaviour
             yield return new WaitForSeconds(0.4f);
             hit.SetActive(false);
         }
+        else
+        {
+            Die();
+        }
     }
     void Die()
     {

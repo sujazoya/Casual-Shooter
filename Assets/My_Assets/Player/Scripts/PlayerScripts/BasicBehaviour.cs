@@ -42,8 +42,7 @@ public class BasicBehaviour : MonoBehaviour
 	public Animator GetAnim { get { return anim; } }
 
 	// Get current default behaviour.
-	public int GetDefaultBehaviour {  get { return defaultBehaviour; } }
-	public FixedJoystick fixedJoystick;
+	public int GetDefaultBehaviour {  get { return defaultBehaviour; } }	
 	void Awake ()
 	{
 		// Set up the references.
@@ -70,8 +69,8 @@ public class BasicBehaviour : MonoBehaviour
 		}
         else
         {
-			h = fixedJoystick.Horizontal;
-			v = fixedJoystick.Vertical;
+			h = GameController_Grappling.walk_Joystick.Horizontal;
+			v = GameController_Grappling.walk_Joystick.Vertical;
 		}
 		
 		// Set the input axes on the Animator Controller.

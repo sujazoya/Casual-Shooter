@@ -73,9 +73,7 @@ public class AdmobAdmanager : MonoBehaviour
         rewardedIntadUnitId[1] = GoogleSheetHandler.g_rewardedint2;
         RequestRewardedInterstitialAd(rewardedIntadUnitId[1], 1);
         rewardedIntadUnitId[2] = GoogleSheetHandler.g_rewardedint3;
-        RequestRewardedInterstitialAd(rewardedIntadUnitId[2], 2);
-        RequestRewarded();
-
+        RequestRewardedInterstitialAd(rewardedIntadUnitId[2], 2);       
 
         show_ad_as_index = GoogleSheetHandler.show_ad_as_index;
           //Debug.Log($"---{rewardedAdID[0]}\n{rewardedAdID[1]}\n{rewardedAdID[2]}");
@@ -85,118 +83,7 @@ public class AdmobAdmanager : MonoBehaviour
 
     }
     #endregion
-
-    #region REWARDED
-    private RewardedAd rewardedAd1;
-    private RewardedAd rewardedAd2;
-    private RewardedAd rewardedAd3;
-
-    private string rewardedAd_ID1;
-    private string rewardedAd_ID2;
-    private string rewardedAd_ID3;
-    public void RequestRewarded()
-    {
-        rewardedAd_ID1 = GoogleSheetHandler.g_rewarded1;
-        rewardedAd1 = RequestRewardedAd(rewardedAd_ID1);
-        rewardedAd_ID2 = GoogleSheetHandler.g_rewarded2;
-        rewardedAd2 = RequestRewardedAd(rewardedAd_ID2);
-        rewardedAd_ID3 = GoogleSheetHandler.g_rewarded3;
-        rewardedAd3 = RequestRewardedAd(rewardedAd_ID3);
-    }
-    public RewardedAd RequestRewardedAd(string adUnitId)
-    {
-        RewardedAd rewardedAd = new RewardedAd(adUnitId);
-
-        rewardedAd.OnAdLoaded += HandleRewardBasedVideoLoaded;
-        rewardedAd.OnUserEarnedReward += HandleRewardBasedVideoRewarded;
-        rewardedAd.OnAdClosed += HandleRewardBasedVideoClosed;
-        rewardedAd.OnAdFailedToLoad += HandleRewardedAdFailedToLoad;
-
-        // Create an empty ad request.
-        AdRequest request = new AdRequest.Builder().Build();
-        // Load the rewarded ad with the request.
-        rewardedAd.LoadAd(request);
-        return rewardedAd;
-    }
-    public RewardedAd CurrentRewardedAd()
-    {
-        if (GoogleSheetHandler.show_g_rewarded1 == true)
-        {
-            return rewardedAd1;
-        }
-        else if (GoogleSheetHandler.show_g_rewarded2 == true)
-        {
-            return rewardedAd2;
-        }
-        else
-             if (GoogleSheetHandler.show_g_rewarded3 == true)
-        {
-            return rewardedAd3;
-        }
-        else
-            return rewardedAd1;
-    }
-    public string CurrentRewardedAd_ID()
-    {
-        if (GoogleSheetHandler.show_g_rewarded1 == true)
-        {
-            rewardedAd_ID1 = GoogleSheetHandler.g_rewarded1;
-            return rewardedAd_ID1;
-        }
-        else if (GoogleSheetHandler.show_g_rewarded2 == true)
-        {
-            rewardedAd_ID2 = GoogleSheetHandler.g_rewarded2;
-            return rewardedAd_ID2;
-        }
-        else
-             if (GoogleSheetHandler.show_g_rewarded3 == true)
-        {
-            rewardedAd_ID3 = GoogleSheetHandler.g_rewarded3;
-            return rewardedAd_ID3;
-        }
-        else
-            rewardedAd_ID1 = GoogleSheetHandler.g_rewarded1;
-        return rewardedAd_ID1;
-    }
-
-    IEnumerator WaitAplayRewardedAd()
-    {
-        while (!CurrentRewardedAd().IsLoaded())
-        {
-            yield return null;
-        }
-        CurrentRewardedAd().Show();
-    }
-    public void ShowRewardedAd()
-    {
-        if (!showAds)
-            return;
-        StartCoroutine(WaitAplayRewardedAd());
-    }
-
-    public void HandleRewardedAdFailedToLoad(object sender, AdErrorEventArgs args)
-    {
-        //MonoBehaviour.print(
-        //    "HandleRewardedAdFailedToLoad event received with message: "
-        //                     + args.Message);
-        RequestRewardedAd(CurrentRewardedAd_ID());
-    }
-    public void HandleOnAdOpened(object sender, EventArgs args)
-    {
-        MonoBehaviour.print("HandleAdOpened event received");
-    }
-    public void HandleRewardBasedVideoRewarded(object sender, Reward args)
-    {
-        string type = args.Type;
-        double amount = args.Amount;
-        RequestRewardedAd(CurrentRewardedAd_ID());
-    }
-
-    public void HandleRewardBasedVideoClosed(object sender, EventArgs args)
-    {
-        RequestRewardedAd(CurrentRewardedAd_ID());
-    }
-#endregion
+   
 
 
     #region SHOW AD IN GAP
@@ -270,8 +157,7 @@ public class AdmobAdmanager : MonoBehaviour
     {
         RewardedInterstitialAd.LoadAd(rewardedIntadUnitId, requestRewardedInterstitialAd[rewIntIndex], adLoadCallback);
        
-    }
-  
+    }  
 
     #region REWARDED INTERTITIL
 
@@ -381,14 +267,7 @@ public class AdmobAdmanager : MonoBehaviour
         RewardedInterstitialAd.LoadAd(rewardedIntadUnitId[CurrentRewIntIndex()], requestRewardedInterstitialAd[CurrentRewIntIndex()], adLoadCallback);
 
     }
-    #endregion
-
-    IEnumerator CheckForReward()
-    {
-        yield return new WaitForSeconds(300f);
-        ShowRewardedAd();
-        StartCoroutine(CheckForReward());
-    }
+    #endregion   
 
    public int CurrentIntIndex()
     {
@@ -461,14 +340,7 @@ public class AdmobAdmanager : MonoBehaviour
             Int_Index = 0;
         }
     }
-    void CheckRewIndex()
-    {
-        Rew_Index++;
-        if (Rew_Index >= maxRewIndex)
-        {
-            Rew_Index = 0;
-        }
-    }
+    
     public void ShowInterstitial()
     {
         if (!showAds)
@@ -693,7 +565,10 @@ public class AdmobAdmanager : MonoBehaviour
         
 
     }
-
+    public void HandleOnAdOpened(object sender, EventArgs args)
+    {
+        MonoBehaviour.print("HandleAdOpened event received");
+    }
     public void HandleOnAdLeavingApplication(object sender, EventArgs args)
     {
         //adManager.CallRewardedAdClickedEvent();

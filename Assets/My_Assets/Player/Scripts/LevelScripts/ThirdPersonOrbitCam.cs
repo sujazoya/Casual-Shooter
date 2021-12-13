@@ -32,8 +32,7 @@ public class ThirdPersonOrbitCam : MonoBehaviour
 	private float recoilAngle = 0f;                                    // The angle to vertically bounce the camera in a recoil movement.
 	private Vector3 forwardHorizontalRef;                              // The forward reference on horizontal plane when clamping camera rotation.
 	private float leftRelHorizontalAngle, rightRelHorizontalAngle;     // The left and right angles to limit rotation relative to the forward reference.
-
-	public FixedJoystick fixedJoystick;
+	
 	// Get the camera horizontal angle.
 	public float GetH { get { return angleH; } }
 
@@ -59,6 +58,7 @@ public class ThirdPersonOrbitCam : MonoBehaviour
 		ResetTargetOffsets ();
 		ResetFOV ();
 		ResetMaxVerticalAngle();
+		
 	}
 
 	void Update()
@@ -73,8 +73,8 @@ public class ThirdPersonOrbitCam : MonoBehaviour
         else
         {
 			// Joystick:
-			angleH += Mathf.Clamp(fixedJoystick.Horizontal, -1, 1) * 60 * horizontalAimingSpeed * Time.deltaTime;
-			angleV += Mathf.Clamp(fixedJoystick.Vertical, -1, 1) * 60 * verticalAimingSpeed * Time.deltaTime;
+			angleH += Mathf.Clamp(GameController_Grappling.rotate_Joystick.Horizontal, -1, 1) * 60 * horizontalAimingSpeed * Time.deltaTime;
+			angleV += Mathf.Clamp(GameController_Grappling.rotate_Joystick.Vertical, -1, 1) * 60 * verticalAimingSpeed * Time.deltaTime;
 
 		}
 

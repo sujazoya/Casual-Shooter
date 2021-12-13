@@ -34,6 +34,7 @@ public class GameController_Grappling : MonoBehaviour
     int pwTIndex;
     [HideInInspector] public List<GameObject> bulletTrails;
     UIManager uIManager;
+    public GameObject player;  
     private void Awake()
     {
         if (Instace == null)
@@ -47,11 +48,20 @@ public class GameController_Grappling : MonoBehaviour
         ShoeMenu();
         items.menu_Button.onClick.AddListener(ShoeMenu);
         UpdateUI();
+        player.SetActive(false);
+    }
+    // Start is called before the first frame update
+    void Start()
+    {
+        CreatBullerails();
+        uIManager = FindObjectOfType<UIManager>();
+       
     }
     public void Play()
     {          
         uIManager.ShowUI(Game.HUD);
         StartCoroutine(LatePlay());
+        player.SetActive(true);
         MusicManager.PauseMusic(0.1f);
     }
     IEnumerator LatePlay()
@@ -67,6 +77,7 @@ public class GameController_Grappling : MonoBehaviour
         items.StartPlay.SetActive(false);
         Game.gameStatus = Game.GameStatus.isPlaying;
         MusicManager.PlayMusic("Gameloop-16");
+        SettingWalkJoystic();
     }
     void CreatBullerails()
     {
@@ -181,12 +192,7 @@ public class GameController_Grappling : MonoBehaviour
         yield return new WaitForSeconds(wait);
         Object.SetActive(value);
     }
-    // Start is called before the first frame update
-    void Start()
-    {
-        CreatBullerails();
-        uIManager = FindObjectOfType<UIManager>();
-    }
+   
     public void DestroyCurrentBuilding()
     {
         if (currentBuilding)
@@ -195,8 +201,51 @@ public class GameController_Grappling : MonoBehaviour
         }
     }
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
-        
+        UpdateUI();
     }
+    #region Joystick Setting
+    public FixedJoystick Joystick_Left;
+    public FixedJoystick Joystick_Right;
+    public static FixedJoystick walk_Joystick;
+    public static FixedJoystick rotate_Joystick;
+    public static int Joystick
+    {
+        get { return PlayerPrefs.GetInt("Joystick", 0); }
+        set { PlayerPrefs.SetInt("Joystick", value); }
+    }
+    public void MirrorJoystick()
+    {
+        SetKey();
+    }
+    bool left=true;
+    bool SetKey()
+    {       
+        // Save boolean using PlayerPrefs
+        PlayerPrefs.SetInt("left", left ? 1 : 0);
+        // Get boolean using PlayerPrefs
+        left = PlayerPrefs.GetInt("foo") == 1 ? true : false;
+        SettingWalkJoystic();
+        return left;
+    }
+     void SettingWalkJoystic()
+    {        
+       
+        if (left)
+        {
+            walk_Joystick = Joystick_Left;
+            rotate_Joystick = Joystick_Right;
+        }
+        else
+        {
+          walk_Joystick = Joystick_Right;
+          rotate_Joystick = Joystick_Left;
+        }
+        uIManager.ShowPopup  ("You Have Changed Joysticks");
+
+    }
+
+
+    #endregion
 }

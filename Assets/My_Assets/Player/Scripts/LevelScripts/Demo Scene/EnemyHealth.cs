@@ -71,7 +71,8 @@ public class EnemyHealth : HealthManager
 		int index = Random.Range(0, items.Length);
         if (items.Length > 0)
         {
-			Instantiate(items[index], transform.position, Quaternion.identity);
+			Vector3 po = new Vector3(transform.position.x, transform.position.y + 1, transform.position.z);
+			Instantiate(items[index], po, Quaternion.identity);
         }
     }
 	public void Revive()

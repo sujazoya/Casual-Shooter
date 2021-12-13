@@ -5,7 +5,18 @@ using UnityEngine.SceneManagement;
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
-using suja;
+[System.Serializable]
+public class MassegeItems
+{
+	public GameObject massegeCanvas;
+	public Text header;
+	public Text massege;
+	public Button closeButton;
+
+	public GameObject popupCanvas;
+	public Text popupText;
+}
+
 
 public class UIManager : MonoBehaviour
 {
@@ -24,6 +35,7 @@ public class UIManager : MonoBehaviour
 	}
 
 	#endregion
+	[SerializeField]MassegeItems massegeItems;
 
 	[Header ("Level Progress UI")]
 	//sceneOffset: because you may add other scenes like (Main menu, ...)
@@ -43,12 +55,13 @@ public class UIManager : MonoBehaviour
 	[SerializeField] GameObject back;
 	[SerializeField] Button pauseButton;
 	[SerializeField] GameObject transition;
-	Jumping_Ball player;
+	[SerializeField] GameObject settingPanel;
 	public IEnumerator ActiveBack(bool value,float wait)
     {
 		yield return new WaitForSeconds(wait);
 		//back.SetActive(value);
     }
+
 	void Start ()
 	{
 		//reset progress value
@@ -58,8 +71,32 @@ public class UIManager : MonoBehaviour
 		ShowUI(Game.Menu);
 	    StartCoroutine(MusicManager.PlayMusic("menu",2));
 		//}
-		pauseButton.onClick.AddListener(OnPause);
-		player = FindObjectOfType<Jumping_Ball>();
+		pauseButton.onClick.AddListener(OnPause);		
+		massegeItems.closeButton.onClick.AddListener(CloseMassegeCanvas);
+		CloseMassegeCanvas();
+	}
+	public void ShowPopup(string massege)
+    {
+		StartCoroutine(ShowPopup_(massege));
+    }
+	IEnumerator ShowPopup_(string massege)
+    {
+		massegeItems.popupText.text = string.Empty;
+		massegeItems.popupCanvas.SetActive(true);
+		massegeItems.popupText.text = massege;
+		yield return new WaitForSeconds(2.5f);
+		massegeItems.popupText.text = string.Empty;
+		massegeItems.popupCanvas.SetActive(false);
+	}
+	void CloseMassegeCanvas()
+    {
+		massegeItems.massegeCanvas.SetActive(false);
+	}
+	public void ShowMassege(string header,string massege)
+    {
+		massegeItems.massegeCanvas.SetActive(true);
+		massegeItems.header.text = header;
+		massegeItems.massege.text = massege;
 	}
 	void OffAllUIObjects()
 	{
@@ -243,5 +280,95 @@ public class UIManager : MonoBehaviour
 	{		
 		//SceneManager_New.onSceneLoaded -= OnSceneLoaded;
 	}
+	public void ShowShop()
+    {
+		ShowUI(Game.shop);
+    }
+	public void CloseShop()
+	{
+		ShowUI(Game.Menu);
+	}
+	public void PurchaseAkMag()
+    {
+        if (Game.TotalCoins >= Game.akBulletPrice)
+        {
+			Game.TotalCoins -= Game.akBulletPrice;
+			Game.AKBullet += 27;
+			ShowMassege
+				("hurray"
+				, "You Purchased AK 47 Mag");
+        }
+        else
+        {
+			ShowMassege
+				("Oh No!"
+				, "You Don't Have Enough Credits");
+		}
+    }
+	public void PurchaseRifleMag()
+	{
+		if (Game.TotalCoins >= Game.rifleBulletPrice)
+		{
+			Game.TotalCoins -= Game.rifleBulletPrice;
+			Game.RifleBullet += 23;
+			ShowMassege
+				("hurray"
+				, "You Purchased Rifle Mag");
+		}
+		else
+		{
+			ShowMassege
+				("Oh No!"
+				, "You Don't Have Enough Credits");
+		}
+	}
+	public void PurchasePistolMag()
+	{
+		if (Game.TotalCoins >= Game.pistolBulletPrice)
+		{
+			Game.TotalCoins -= Game.pistolBulletPrice;
+			Game.pistolBulletPrice += 9;
+			ShowMassege
+				("hurray"
+				, "You Purchased Pistol Mag");
+		}
+		else
+		{
+			ShowMassege
+				("Oh No!"
+				, "You Don't Have Enough Credits");
+		}
+	}
+	public void PurchaseLife()
+	{
+		if (Game.TotalCoins >= Game.lifePrice)
+		{
+			Game.TotalCoins -= Game.lifePrice;
+			Game.Life += 1;
+			ShowMassege
+				("hurray"
+				, "You Purchased 1 Life");
+		}
+		else
+		{
+			ShowMassege
+				("Oh No!"
+				, "You Don't Have Enough Credits");
+		}
+	}
+	public void RewardTheUser()
+    {
+		Game.TotalCoins += 100;
+		ShowMassege
+				("Congratulation"
+				, "You Won 100 Credits");
+	}
 
+	public void WarnAdClosed()
+	{
+		ShowMassege
+				("Sorry"
+				, "You Closed The AD So You Will Not Get Any Credits");
+	}
+	
 }

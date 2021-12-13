@@ -6,16 +6,17 @@ public class DoOnEnable : MonoBehaviour
 {
     public enum Do
     {
-        None,Disable,Destroy,PlaySound
+        None,Disable,Destroy,PlaySoundFromMusicManager, playSelfSound
     }
-    [SerializeField] float after = 0;
-    [SerializeField] Do @do;
+    public float after = 0;
+    public Do @do;
     [Header("If You Watnt To Play Sound Please " +
         "Enter Sound Name" +
         "there should MusicManager In The Scene")]
-    [SerializeField] string soundName;
+    public string soundName;
+    public AudioClip selfSound;   
     private void OnEnable()
-    {
+    {       
         StartCoroutine(DoWork());
     }
     IEnumerator DoWork()
@@ -30,7 +31,7 @@ public class DoOnEnable : MonoBehaviour
             gameObject.SetActive(false);
         }
         else
-            if (@do == Do.PlaySound)
+            if (@do == Do.PlaySoundFromMusicManager)
         {
             if (soundName!=string.Empty)
             {
@@ -38,7 +39,11 @@ public class DoOnEnable : MonoBehaviour
             }
            
         }
-        
+        if (selfSound)
+        {
+            AudioSource.PlayClipAtPoint(selfSound, transform.position);
+        }
 
     }
+    
 }

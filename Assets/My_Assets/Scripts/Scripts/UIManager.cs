@@ -52,10 +52,12 @@ public class UIManager : MonoBehaviour
 	[SerializeField] Image fadePanel;
 
 	[SerializeField] List<GameObject> UIObjects;	
-	[SerializeField] GameObject back;
+	//[SerializeField] GameObject back;
 	[SerializeField] Button pauseButton;
 	[SerializeField] GameObject transition;
 	[SerializeField] GameObject settingPanel;
+	public GameObject gameover_warnPanel;
+	[SerializeField] PlayerHealth playerHealth;
 	public IEnumerator ActiveBack(bool value,float wait)
     {
 		yield return new WaitForSeconds(wait);
@@ -84,7 +86,7 @@ public class UIManager : MonoBehaviour
 		massegeItems.popupText.text = string.Empty;
 		massegeItems.popupCanvas.SetActive(true);
 		massegeItems.popupText.text = massege;
-		yield return new WaitForSeconds(2.5f);
+		yield return new WaitForSeconds(5f);
 		massegeItems.popupText.text = string.Empty;
 		massegeItems.popupCanvas.SetActive(false);
 	}
@@ -204,7 +206,24 @@ public class UIManager : MonoBehaviour
 			MusicManager.PlaySfx("gameover");
 		}
 	}
-	
+	public void ShowGameOver_Warn()
+    {
+		gameover_warnPanel.SetActive(true);
+		Game.gameStatus = Game.GameStatus.isPaused;
+		MusicManager.PauseMusic(0.2f);
+	}
+	public void GoForGameOver()
+    {
+		gameover_warnPanel.SetActive(false);
+		OnGameover();
+	}
+	public void MakeResumeTheGame()
+	{
+		playerHealth.health = 100;
+		gameover_warnPanel.SetActive(false);
+		Game.gameStatus = Game.GameStatus.isPlaying;
+		MusicManager.UnpauseMusic();
+	}
 	public void OnLevelWon()
 	{
 		StartCoroutine(ActiveBack(true, 1.5f));
@@ -296,7 +315,7 @@ public class UIManager : MonoBehaviour
 			Game.AKBullet += 27;
 			ShowMassege
 				("hurray"
-				, "You Purchased AK 47 Mag");
+				, "You Purchased AK47 23 Bullets");
         }
         else
         {
@@ -313,7 +332,7 @@ public class UIManager : MonoBehaviour
 			Game.RifleBullet += 23;
 			ShowMassege
 				("hurray"
-				, "You Purchased Rifle Mag");
+				, "You Purchased Rifle 23 Bullets");
 		}
 		else
 		{
@@ -327,10 +346,10 @@ public class UIManager : MonoBehaviour
 		if (Game.TotalCoins >= Game.pistolBulletPrice)
 		{
 			Game.TotalCoins -= Game.pistolBulletPrice;
-			Game.pistolBulletPrice += 9;
+			Game.PistolBullet += 9;
 			ShowMassege
 				("hurray"
-				, "You Purchased Pistol Mag");
+				, "You Purchased Pistol 9 Bullets");
 		}
 		else
 		{
@@ -362,6 +381,13 @@ public class UIManager : MonoBehaviour
 		ShowMassege
 				("Congratulation"
 				, "You Won 100 Credits");
+	}
+	public void RewardTheUser_Half()
+	{
+		Game.TotalCoins += 50;
+		ShowMassege
+				("Congratulation"
+				, "You Won 50 Credits");
 	}
 
 	public void WarnAdClosed()

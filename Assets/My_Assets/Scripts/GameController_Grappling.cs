@@ -15,15 +15,21 @@ public class MyItems
     public GameObject aimButton;
     public GameObject bulletTrail;
     public GameObject killEffect;
-    public Text coinText;
-    public Text diemondText;
-    public Text scoreText;
-    public Text lifeText;
+    public Text[] coinText;
+    public Text[] diemondText;
+    public Text[] scoreText;
+    public Text[] lifeText;
+    public Text[] akBulletText;
+    public Text[] rifleBulletText;
+    public Text[] pistolBulletText;
     public GameObject extraHealthSlider;
     public Image extraHealthfill;
     public GameObject StartPlay;
     public Text number;
+    public GameObject settingMenu;
+    public Button shopCloseButton;
 }
+
 
 public class GameController_Grappling : MonoBehaviour
 {
@@ -34,7 +40,9 @@ public class GameController_Grappling : MonoBehaviour
     int pwTIndex;
     [HideInInspector] public List<GameObject> bulletTrails;
     UIManager uIManager;
-    public GameObject player;  
+    public GameObject player;
+    public Slider walk_Slider;
+    public Slider rotate_Slider;
     private void Awake()
     {
         if (Instace == null)
@@ -56,6 +64,9 @@ public class GameController_Grappling : MonoBehaviour
         CreatBullerails();
         uIManager = FindObjectOfType<UIManager>();
        
+        walk_Slider.value = PlayerPrefs.GetFloat(walkSpeed);
+        rotate_Slider.value = PlayerPrefs.GetFloat(rotateSpeed);
+
     }
     public void Play()
     {          
@@ -163,10 +174,35 @@ public class GameController_Grappling : MonoBehaviour
     }
     public void UpdateUI()
     {
-        items.scoreText  .text     = Game.currentScore.ToString();
-        items.coinText   .text     = Game.TotalCoins.ToString();
-        items.diemondText.text     = Game.TotalDiemonds.ToString();
-        items.lifeText   .text     = Game.Life.ToString();
+        for (int i = 0; i < items.scoreText.Length; i++)
+        {
+            items.scoreText[i].text =                                    Game.currentScore.ToString();
+        }
+        for (int i = 0; i < items.coinText.Length; i++)
+        {
+            items.coinText[i].text =                                      Game.TotalCoins.ToString();
+        }
+        for (int i = 0; i < items.diemondText.Length; i++)
+        {
+            items.diemondText[i].text =                                   Game.TotalDiemonds.ToString();
+        }
+        for (int i = 0; i < items.lifeText.Length; i++)
+        {
+            items.lifeText[i].text =                                      Game.Life.ToString();
+        }
+        for (int i = 0; i < items.akBulletText.Length; i++)
+        {
+            items.akBulletText[i].text =                                  Game.AKBullet.ToString();
+        }
+        for (int i = 0; i < items.rifleBulletText.Length; i++)
+        {
+            items.rifleBulletText[i].text =                               Game.RifleBullet.ToString();
+        }
+        for (int i = 0; i < items.pistolBulletText.Length; i++)
+        {
+            items.pistolBulletText[i].text =                              Game.PistolBullet.ToString();
+        }
+       
     }
     public void ShowKill()
     {
@@ -205,6 +241,21 @@ public class GameController_Grappling : MonoBehaviour
     {
         UpdateUI();
     }
+    public void Show_Settingenu()
+    {
+        items.settingMenu.SetActive(true);
+        Game.gameStatus = Game.GameStatus.isPaused;
+        MusicManager.PauseMusic(0.1f);
+        items.shopCloseButton.onClick.AddListener(Close_Settingenu);
+    }
+    public void Close_Settingenu()
+    {
+        items.settingMenu.SetActive(false);
+        Game.gameStatus = Game.GameStatus.isPlaying;
+        MusicManager.UnpauseMusic();
+        items.shopCloseButton.onClick.RemoveAllListeners();
+        items.shopCloseButton.onClick.AddListener(uIManager.CloseShop);
+    }
     #region Joystick Setting
     public FixedJoystick Joystick_Left;
     public FixedJoystick Joystick_Right;
@@ -242,7 +293,16 @@ public class GameController_Grappling : MonoBehaviour
           walk_Joystick = Joystick_Right;
           rotate_Joystick = Joystick_Left;
         }
-        uIManager.ShowPopup  ("You Have Changed Joysticks");
+        //uIManager.ShowPopup  ("You Have Changed Joysticks");
+
+    }
+    string walkSpeed = "walkSpeed";
+    string rotateSpeed = "rotateSpeed"; 
+
+    void Update()
+    {
+        PlayerPrefs.SetFloat(walkSpeed, walk_Slider.value);
+        PlayerPrefs.SetFloat(rotateSpeed, rotate_Slider.value);
 
     }
 

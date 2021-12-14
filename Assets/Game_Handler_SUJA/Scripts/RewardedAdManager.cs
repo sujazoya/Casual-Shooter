@@ -13,7 +13,7 @@ public class RewardedAdManager : MonoBehaviour
     [HideInInspector] public AdRequest[] requestRewarded;
     bool show_ad_as_index;
     private bool showAds;
-    UIManager uiManager;
+    UIManager uiManager;   
     // Start is called before the first frame update
     void Start()
     {
@@ -61,6 +61,17 @@ public class RewardedAdManager : MonoBehaviour
         // Load the rewarded ad with the request.
         rewardedAd.LoadAd(request);
         return rewardedAd;
+    }
+    public bool IsReadyToShowAd()
+    {
+        if (CurrentRewardedAd().IsLoaded())
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
     RewardedAd currentRewardedAd;
     public RewardedAd CurrentRewardedAd()

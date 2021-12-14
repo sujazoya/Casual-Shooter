@@ -7,8 +7,8 @@ public class ThirdPersonOrbitCam : MonoBehaviour
 	public Vector3 pivotOffset = new Vector3(0.0f, 1.0f,  0.0f);       // Offset to repoint the camera.
 	public Vector3 camOffset   = new Vector3(0.4f, 0.5f, -2.0f);       // Offset to relocate the camera related to the player position.
 	public float smooth = 10f;                                         // Speed of camera responsiveness.
-	public float horizontalAimingSpeed = 6f;                           // Horizontal turn speed.
-	public float verticalAimingSpeed = 6f;                             // Vertical turn speed.
+	//public float horizontalAimingSpeed = 6f;                           // Horizontal turn speed.
+	//public float verticalAimingSpeed = 6f;                             // Vertical turn speed.
 	public float maxVerticalAngle = 30f;                               // Camera max clamp angle. 
 	public float minVerticalAngle = -60f;                              // Camera min clamp angle.
 	public string XAxis = "Analog X";                                  // The default horizontal axis input name.
@@ -32,7 +32,7 @@ public class ThirdPersonOrbitCam : MonoBehaviour
 	private float recoilAngle = 0f;                                    // The angle to vertically bounce the camera in a recoil movement.
 	private Vector3 forwardHorizontalRef;                              // The forward reference on horizontal plane when clamping camera rotation.
 	private float leftRelHorizontalAngle, rightRelHorizontalAngle;     // The left and right angles to limit rotation relative to the forward reference.
-	
+	GameController_Grappling gameController;
 	// Get the camera horizontal angle.
 	public float GetH { get { return angleH; } }
 
@@ -58,7 +58,7 @@ public class ThirdPersonOrbitCam : MonoBehaviour
 		ResetTargetOffsets ();
 		ResetFOV ();
 		ResetMaxVerticalAngle();
-		
+		gameController = FindObjectOfType<GameController_Grappling>();
 	}
 
 	void Update()
@@ -67,14 +67,14 @@ public class ThirdPersonOrbitCam : MonoBehaviour
         // Mouse:
         if (!Application.isMobilePlatform)
         {
-			angleH += Mathf.Clamp(Input.GetAxis("Mouse X"), -1, 1) * horizontalAimingSpeed;
-			angleV += Mathf.Clamp(Input.GetAxis("Mouse Y"), -1, 1) * verticalAimingSpeed;
+			angleH += Mathf.Clamp(Input.GetAxis("Mouse X"), -1, 1) * gameController.rotate_Slider.value;
+			angleV += Mathf.Clamp(Input.GetAxis("Mouse Y"), -1, 1) * gameController.rotate_Slider.value;
 		}
         else
         {
 			// Joystick:
-			angleH += Mathf.Clamp(GameController_Grappling.rotate_Joystick.Horizontal, -1, 1) * 60 * horizontalAimingSpeed * Time.deltaTime;
-			angleV += Mathf.Clamp(GameController_Grappling.rotate_Joystick.Vertical, -1, 1) * 60 * verticalAimingSpeed * Time.deltaTime;
+			angleH += Mathf.Clamp(GameController_Grappling.rotate_Joystick.Horizontal, -1, 1) * 60 * gameController.rotate_Slider.value * Time.deltaTime;
+			angleV += Mathf.Clamp(GameController_Grappling.rotate_Joystick.Vertical, -1, 1) * 60 * gameController.rotate_Slider.value * Time.deltaTime;
 
 		}
 
@@ -150,8 +150,8 @@ public class ThirdPersonOrbitCam : MonoBehaviour
 		angleBetween = angleBetween * sign;
 
 		// Get current input movement to compensate after limit angle is reached.
-		float acc = Mathf.Clamp(Input.GetAxis("Mouse X"), -1, 1) * horizontalAimingSpeed;
-		acc += Mathf.Clamp(Input.GetAxis("Analog X"), -1, 1) * 60 * horizontalAimingSpeed * Time.deltaTime;
+		float acc = Mathf.Clamp(Input.GetAxis("Mouse X"), -1, 1) * gameController.rotate_Slider.value;
+		acc += Mathf.Clamp(Input.GetAxis("Analog X"), -1, 1) * 60 * gameController.rotate_Slider.value * Time.deltaTime;
 
 		// Limit left angle.
 		if (sign < 0 && angleBetween < leftRelHorizontalAngle)

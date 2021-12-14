@@ -20,13 +20,13 @@ public class CollectableItem : MonoBehaviour
         }else
          if (itemType == ItemType.Diemond)
         {
-            Game.TotalCoins += Game.diemondToGive;
+            Game.TotalDiemonds += Game.diemondToGive;
             gameController.ShowPowerup(Game.diemondToGive.ToString());
         }
         else
          if (itemType == ItemType.Medicare)
         {
-            Game.TotalCoins += Game.lifeToGive;
+            Game.Life += Game.lifeToGive;
             gameController.ShowPowerup(Game.lifeToGive.ToString());
         }
         gameController.UpdateUI();

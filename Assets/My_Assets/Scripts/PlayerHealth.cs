@@ -49,7 +49,8 @@ public class PlayerHealth : MonoBehaviour
         }
         else
         {
-            Die();
+            uIManager.ShowGameOver_Warn();
+            //Die();
         }
     }
     void Die()

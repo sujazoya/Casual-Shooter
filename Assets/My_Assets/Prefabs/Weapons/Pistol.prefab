@@ -168,10 +168,11 @@ MonoBehaviour:
   type: 1
   mode: 0
   burstSize: 0
-  mag: 3
-  totalBullets: 60
+  mag: 9
+  totalBullets: 18
   muzzle: {fileID: 2650024938951183889}
   lazer: {fileID: 0}
+  weaponName: 1
 --- !u!1001 &2650024938951323681
 PrefabInstance:
   m_ObjectHideFlags: 0

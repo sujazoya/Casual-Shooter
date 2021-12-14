@@ -31,6 +31,7 @@ public class AdmobAdmanager : MonoBehaviour
     private bool showAds;
     public static bool readyToShoAd;
     bool show_ad_as_index;
+
     #region GestAdIDsAndRequestAds()
     
     public void GestAdIDsAndRequestAds()
@@ -211,6 +212,10 @@ public class AdmobAdmanager : MonoBehaviour
     private void userEarnedRewardCallback(Reward reward)
     {
         // TODO: Reward the user.
+        if (FindObjectOfType<UIManager>())
+        {
+            FindObjectOfType<UIManager>().RewardTheUser_Half();
+        }
     }
     public int CurrentReawIntIndex()
     {

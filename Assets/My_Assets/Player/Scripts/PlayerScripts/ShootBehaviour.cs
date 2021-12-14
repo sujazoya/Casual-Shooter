@@ -392,7 +392,7 @@ public class ShootBehaviour : GenericBehaviour
 			// Same weapon type, recharge bullets and destroy duplicated object.
 			if (this.weapons[slotMap[newWeapon.type]].label == newWeapon.label)
 			{
-				this.weapons[slotMap[newWeapon.type]].ResetBullets();
+				//this.weapons[slotMap[newWeapon.type]].ResetBullets();
 				ChangeWeapon(activeWeapon, slotMap[newWeapon.type]);
 				GameObject.Destroy(newWeapon.gameObject);
 				return;

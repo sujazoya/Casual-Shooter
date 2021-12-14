@@ -183,9 +183,10 @@ MonoBehaviour:
   mode: 1
   burstSize: 3
   mag: 23
-  totalBullets: 160
+  totalBullets: 23
   muzzle: {fileID: 631183925715966260}
   lazer: {fileID: 351763826440050486}
+  weaponName: 3
 --- !u!114 &5688165890622571070
 MonoBehaviour:
   m_ObjectHideFlags: 0

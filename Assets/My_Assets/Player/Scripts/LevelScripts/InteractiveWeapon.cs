@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityStandardAssets.CrossPlatformInput;
+using System.Collections;
+using System.Collections.Generic;
 // This class corresponds to any in-game weapon interactions.
 public class InteractiveWeapon : MonoBehaviour
 {
@@ -42,8 +44,18 @@ public class InteractiveWeapon : MonoBehaviour
 	WeaponIK weaponIK;
 	[SerializeField] GameObject muzzle;
 	[SerializeField] GameObject lazer;
+	[SerializeField] WeaponName weaponName;
+	public enum WeaponName
+    {
+		None,Pisol,AK,Rifle
+    }
 	void Awake()
 	{
+		StartCoroutine(LateAwake());
+	}
+	IEnumerator LateAwake()
+    {
+		yield return new WaitUntil(() => Game.gameStatus == Game.GameStatus.isPlaying);
 		// Set up the references.
 		this.gameObject.name = this.label;
 		this.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
@@ -75,16 +87,29 @@ public class InteractiveWeapon : MonoBehaviour
 		}
 
 		// Assert that the gun muzzle is exists.
-		if(!this.transform.Find("muzzle"))
+		if (!this.transform.Find("muzzle"))
 		{
-			Debug.LogError(this.name+" muzzle is not present. Create a game object named 'muzzle' as a child of this game object");
+			Debug.LogError(this.name + " muzzle is not present. Create a game object named 'muzzle' as a child of this game object");
 		}
 
 		// Set default values.
 		fullMag = mag;
-		maxBullets = totalBullets;
+		if (weaponName == WeaponName.Pisol)
+		{
+			maxBullets = Game.PistolBullet;
+		}
+		else
+	    if (weaponName == WeaponName.AK)
+		{
+			maxBullets = Game.AKBullet;
+		}
+		else
+	    if (weaponName == WeaponName.Rifle)
+		{
+			maxBullets = Game.RifleBullet;
+		}		
 		pickupHUD.gameObject.SetActive(false);
-        if (lazer)  { lazer.SetActive(false); }
+		if (lazer) { lazer.SetActive(false); }
 		if (muzzle) { muzzle.SetActive(false); }
 	}
     private void Start()
@@ -148,34 +173,43 @@ public class InteractiveWeapon : MonoBehaviour
 	// Handle weapon collision with environment.
 	private void OnCollisionEnter(Collision collision)
 	{
-		if(collision.collider.gameObject != player && Vector3.Distance(transform.position, player.transform.position) <= 5f)
+		if (Game.gameStatus == Game.GameStatus.isPlaying)
 		{
-			AudioSource.PlayClipAtPoint(dropSound, transform.position, 0.5f);
-			GameController_Grappling.onWeaponTriggerEnter = true;
+			if (collision.collider.gameObject != player && Vector3.Distance(transform.position, player.transform.position) <= 5f)
+			{
+				AudioSource.PlayClipAtPoint(dropSound, transform.position, 0.5f);
+				GameController_Grappling.onWeaponTriggerEnter = true;
+			}
 		}
 	}
 
 	// Handle player exiting radius of interaction.
 	private void OnTriggerExit(Collider other)
 	{
-		if (other.gameObject == player)
+		if (Game.gameStatus == Game.GameStatus.isPlaying)
 		{
-			GameController_Grappling.onWeaponTriggerEnter = false;
-			pickable = false;
-			gameController_Grappling.PickupButton(false);
-			
-			//TooglePickupHUD(false);
+			if (other.gameObject == player)
+			{
+				GameController_Grappling.onWeaponTriggerEnter = false;
+				pickable = false;
+				gameController_Grappling.PickupButton(false);
+
+				//TooglePickupHUD(false);
+			}
 		}
 	}
 
 	// Handle player within radius of interaction.
 	void OnTriggerStay(Collider other)
 	{
-		if (other.gameObject == player && playerInventory && playerInventory.isActiveAndEnabled)
+		if (Game.gameStatus == Game.GameStatus.isPlaying)
 		{
-			pickable = true;
-			gameController_Grappling.PickupButton(true);
-			//TooglePickupHUD(true);
+			if (other.gameObject == player && playerInventory && playerInventory.isActiveAndEnabled)
+			{
+				pickable = true;
+				gameController_Grappling.PickupButton(true);
+				//TooglePickupHUD(true);
+			}
 		}
 	}
 
@@ -232,19 +266,52 @@ public class InteractiveWeapon : MonoBehaviour
 		{
 			transform.root.GetComponent<PlayerIKController>().ikActive = false;
 		}
-		if (mag == fullMag || totalBullets == 0)
-			return false;
-		else if(totalBullets < fullMag - mag)
+        if (weaponName == WeaponName.Pisol)
+        {
+			if (mag == fullMag || Game.PistolBullet == 0)
+				return false;
+			else if (Game.PistolBullet < fullMag - mag)
+			{
+				mag += Game.PistolBullet;
+				Game.PistolBullet = 0;
+			}
+			else
+			{
+				Game.PistolBullet -= fullMag - mag;
+				mag = fullMag;
+			}
+		}else
+		if (weaponName == WeaponName.AK)
 		{
-			mag += totalBullets;
-			totalBullets = 0; 
+			if (mag == fullMag || Game.AKBullet == 0)
+				return false;
+			else if (Game.AKBullet < fullMag - mag)
+			{
+				mag += Game.AKBullet;
+				Game.AKBullet = 0;
+			}
+			else
+			{
+				Game.AKBullet -= fullMag - mag;
+				mag = fullMag;
+			}
 		}
 		else
+		if (weaponName == WeaponName.Rifle)
 		{
-			totalBullets -= fullMag - mag;
-			mag = fullMag;
+			if (mag == fullMag || Game.RifleBullet == 0)
+				return false;
+			else if (Game.RifleBullet < fullMag - mag)
+			{
+				mag += Game.RifleBullet;
+				Game.RifleBullet = 0;
+			}
+			else
+			{
+				Game.RifleBullet -= fullMag - mag;
+				mag = fullMag;
+			}
 		}
-
 		return true;
 	}
 
@@ -271,15 +338,29 @@ public class InteractiveWeapon : MonoBehaviour
 	}
 
 	// Reset the bullet parameters.
-	public void ResetBullets()
-	{
-		mag = fullMag;
-		totalBullets = maxBullets;
-	}
+	//public void ResetBullets()
+	//{
+	//	mag = fullMag;
+	//	totalBullets = maxBullets;
+	//}
 
 	// Update weapon screen HUD.
 	private void UpdateHud()
 	{
+		if (weaponName == WeaponName.Pisol)
+		{
+			totalBullets = Game.PistolBullet;
+		}
+		else
+		if (weaponName == WeaponName.AK)
+		{
+			totalBullets = Game.AKBullet;
+		}
+		else
+		if (weaponName == WeaponName.Rifle)
+		{
+			totalBullets = Game.RifleBullet;
+		}
 		weaponHud.UpdateWeaponHUD(sprite, mag, fullMag, totalBullets);
 	}
 }

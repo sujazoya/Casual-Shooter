@@ -6,7 +6,7 @@ namespace StackBall {
     public class ShareAndRate : MonoBehaviour
     {
         string subject = "I Believe! You Will Love This Game";
-        string body = "https://play.google.com/store/apps/details?id=com.rehengamer.knifegames";
+        string body = "https://play.google.com/store/apps/details?id=com.rehengamer.mrgrapplerMaster";
         // Start is called before the first frame update
         void Start()
         {

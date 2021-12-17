@@ -87,11 +87,10 @@ public class AdmobAdmanager : MonoBehaviour
    
 
 
-    #region SHOW AD IN GAP
-    private float WaitForNextAd = 200;
+    #region SHOW AD IN GAP   
     IEnumerator ShowRewardedInt()
     {
-        yield return new WaitForSeconds(22);
+        yield return new WaitForSeconds(5);
         ShowRewardedInterstitialAd();
         //StartCoroutine(ShowRewarded());
     }

@@ -11,7 +11,8 @@ public class Game
 	}
 	public static GameStatus gameStatus;
 	public static bool isGameover = false;
-	public static bool isMoving = false;	
+	public static bool isMoving = false;
+	public static bool playerIdDead;
     public static string itemTag = "Object";
     public static string powerupTag = "Powerup";
 	public static string blastTag = "Obstacle";
@@ -34,10 +35,17 @@ public class Game
 	public static int lifeToGive = 1;
 	public static int currentScore;
 
-	public static int pistolBulletPrice=200;
+	public static int pistolBulletPrice=100;
 	public static int akBulletPrice = 300;
 	public static int rifleBulletPrice = 300;
 	public static int lifePrice = 500;
+
+
+	public static int retryCount
+	{
+		get { return PlayerPrefs.GetInt("retryCount", 0); }
+		set { PlayerPrefs.SetInt("retryCount", value); }
+	}
 	public static int TotalCoins
 	{
 		get { return PlayerPrefs.GetInt("TotalCoins", 0); }
@@ -55,8 +63,8 @@ public class Game
 	}
 	public static int HighScore
 	{
-		get { return PlayerPrefs.GetInt("TotalCoins", 0); }
-		set { PlayerPrefs.SetInt("TotalCoins", value); }
+		get { return PlayerPrefs.GetInt("HighScore", 0); }
+		set { PlayerPrefs.SetInt("HighScore", value); }
 	}
     public static int Life
     {

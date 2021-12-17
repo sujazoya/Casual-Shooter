@@ -38,6 +38,8 @@ public class AimBehaviour : GenericBehaviour
 	// Update is used to set features regardless the active behaviour.
 	void Update ()
 	{
+		if (Game.playerIdDead)
+			return;
 		peekCorner = behaviourManager.GetAnim.GetBool(cornerBool);
         if (haveWeapon)
         {
@@ -116,6 +118,8 @@ public class AimBehaviour : GenericBehaviour
 	// LocalLateUpdate: manager is called here to set player rotation after camera rotates, avoiding flickering.
 	public override void LocalLateUpdate()
 	{
+		if (Game.playerIdDead)
+			return;
 		AimManagement();
 	}
 
@@ -129,6 +133,7 @@ public class AimBehaviour : GenericBehaviour
 	// Rotate the player to match correct orientation, according to camera.
 	void Rotating()
 	{
+		
 		Vector3 forward = behaviourManager.playerCamera.TransformDirection(Vector3.forward);
 		// Player is moving on ground, Y component of camera facing is not relevant.
 		forward.y = 0.0f;

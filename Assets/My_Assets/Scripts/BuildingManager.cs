@@ -67,7 +67,7 @@ public class BuildingManager : MonoBehaviour
     }
     void DestroyBuildingsNearPlayer()
     {
-        hitColliders = Physics.OverlapSphere(transform.position, 0.3f);
+        hitColliders = Physics.OverlapSphere(transform.position, 50f);
         foreach (var hitCollider in hitColliders)
         {
             if (hitCollider.gameObject.tag == "building")
@@ -95,7 +95,7 @@ public class BuildingManager : MonoBehaviour
         pos.z = Random.Range(minPose, mAXPose);
         return pos;
     }
-    [HideInInspector]public Collider[] hitColliders;
+    public Collider[] hitColliders;
 
 
 }

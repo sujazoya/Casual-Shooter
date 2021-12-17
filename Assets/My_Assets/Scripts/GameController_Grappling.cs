@@ -27,7 +27,7 @@ public class MyItems
     public GameObject StartPlay;
     public Text number;
     public GameObject settingMenu;
-    public Button shopCloseButton;
+    public Button shopCloseButton;    
 }
 
 
@@ -39,12 +39,14 @@ public class GameController_Grappling : MonoBehaviour
     public GameObject currentBuilding;
     int pwTIndex;
     [HideInInspector] public List<GameObject> bulletTrails;
-    UIManager uIManager;
+    [SerializeField] UIManager uIManager;
     public GameObject player;
     public Slider walk_Slider;
     public Slider rotate_Slider;
+    [SerializeField] GameObject mainBg;    
     private void Awake()
     {
+        //PlayerPrefs.DeleteAll();
         if (Instace == null)
         {
             Instace = this;
@@ -57,27 +59,38 @@ public class GameController_Grappling : MonoBehaviour
         items.menu_Button.onClick.AddListener(ShoeMenu);
         UpdateUI();
         player.SetActive(false);
+        Game.playerIdDead = false;
+        if (mainBg) { mainBg.SetActive(true); }
     }
     // Start is called before the first frame update
     void Start()
     {
         CreatBullerails();
-        uIManager = FindObjectOfType<UIManager>();
+        //uIManager = FindObjectOfType<UIManager>();
        
         walk_Slider.value = PlayerPrefs.GetFloat(walkSpeed);
         rotate_Slider.value = PlayerPrefs.GetFloat(rotateSpeed);
-
+        items.shopCloseButton.onClick.AddListener(uIManager.CloseShop);
+        Invoke("ActivePlayer", 2);
+    }
+    void ActivePlayer()
+    {
+        player.SetActive(true);
     }
     public void Play()
-    {          
+    {
+        ActivePlayer();
+        Game.retryCount = 0;
+        player.GetComponent<PlayerHealth>().ResetPlayer();
         uIManager.ShowUI(Game.HUD);
-        StartCoroutine(LatePlay());
-        player.SetActive(true);
+        StartCoroutine(LatePlay());       
         MusicManager.PauseMusic(0.1f);
     }
     IEnumerator LatePlay()
     {
-        yield return new WaitForSeconds(2.5f);
+        yield return new WaitForSeconds(1f);
+        if (mainBg) { mainBg.SetActive(false); }
+        yield return new WaitForSeconds(1.5f);
         items.StartPlay.SetActive(true);
         items.number.text = "1";
         yield return new WaitForSeconds(1f);
@@ -93,7 +106,7 @@ public class GameController_Grappling : MonoBehaviour
     void CreatBullerails()
     {
         GameObject btParent = new GameObject();
-        for (int i = 0; i < 50; i++)
+        for (int i = 0; i < 150; i++)
         {
             GameObject bt = Instantiate(items.bulletTrail);
             bt.transform.parent = btParent.transform;
@@ -245,16 +258,25 @@ public class GameController_Grappling : MonoBehaviour
     {
         items.settingMenu.SetActive(true);
         Game.gameStatus = Game.GameStatus.isPaused;
-        MusicManager.PauseMusic(0.1f);
-        items.shopCloseButton.onClick.AddListener(Close_Settingenu);
+        MusicManager.PauseMusic(0.1f);       
+    }
+    public void OpenShopFromSetting()
+    {
+        uIManager.UIObject(Game.shop).SetActive(true);
+        items.shopCloseButton.onClick.RemoveAllListeners();
+        items.shopCloseButton.onClick.AddListener(CloseShopFromSetting);
+    }
+     void CloseShopFromSetting()
+    {
+        uIManager.UIObject(Game.shop).SetActive(false);
+        items.shopCloseButton.onClick.RemoveAllListeners();
+       
     }
     public void Close_Settingenu()
     {
         items.settingMenu.SetActive(false);
         Game.gameStatus = Game.GameStatus.isPlaying;
-        MusicManager.UnpauseMusic();
-        items.shopCloseButton.onClick.RemoveAllListeners();
-        items.shopCloseButton.onClick.AddListener(uIManager.CloseShop);
+        MusicManager.UnpauseMusic();        
     }
     #region Joystick Setting
     public FixedJoystick Joystick_Left;

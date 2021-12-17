@@ -6,6 +6,12 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Game_Handler_SUJA/LoadingScene.unity
+    guid: 14b1a56decc7da341ba9f089a8c821b5
+  - enabled: 1
+    path: Assets/Scenes/MainMenu.unity
+    guid: d152890ebfe307b4eb34541590bb58bb
+  - enabled: 1
     path: Assets/Scenes/Game_Grappling.unity
     guid: d973d9bdefe4aff4a81a2d64387a2215
   m_configObjects: {}

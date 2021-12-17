@@ -61,6 +61,8 @@ public class BasicBehaviour : MonoBehaviour
 
 	void Update()
 	{
+		if (Game.playerIdDead)
+			return;
 		// Store the input axes.
 		if (!Application.isMobilePlatform)
 		{

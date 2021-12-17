@@ -66,7 +66,10 @@ public class GoogleSheetHandler
     public static string button_text;
     public static string other_games;
     public static string ad_show_onrequest_count;
-
+    //NEW IMPLEMENT-----------17-12-21
+    public static string show_rewarded_onrequest_count;
+    public static bool show_rewarded;
+    //---------------------------------------------------
     public static string terms_url;
     public static bool has_terms;
 
@@ -85,6 +88,7 @@ public class GoogleSheetHandler
     {
         JSONNode info = JSON.Parse(snapshot)[0];
         show_ad_as_index = BooleanChecker(info["show_ad_as_index"].Value);
+        show_rewarded = BooleanChecker(info["show_rewarded"].Value);
         isAds = BooleanChecker(info["isAds"].Value);
         isNotification = BooleanChecker(info["isNotification"].Value);
         isUpdate = BooleanChecker(info["isUpdate"].Value);
@@ -149,6 +153,7 @@ public class GoogleSheetHandler
         g_rewardedint1 = info["g_rewardedint1"].Value.ToString();
         g_rewardedint2 = info["g_rewardedint2"].Value.ToString();
         g_rewardedint3 = info["g_rewardedint3"].Value.ToString();
+        show_rewarded_onrequest_count = info["show_rewarded_onrequest_count"].Value.ToString();
 
         sa_ad_count = info["sa_ad_count"].Value.ToString();
         ad1_image = info["ad1_image"].Value.ToString();

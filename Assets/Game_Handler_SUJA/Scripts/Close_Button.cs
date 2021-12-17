@@ -27,7 +27,7 @@ public class Close_Button : MonoBehaviour
        
     }
     int buttonPress;
-    void OnPressCloseButton()
+    public void OnPressCloseButton()
     {
         if (buttonPress == 0)
         {
@@ -63,7 +63,7 @@ public class Close_Button : MonoBehaviour
             areYouSure.SetActive(true);
             yesOpened = true;
         }
-        yield return new WaitForSeconds(1.2f);
+        yield return new WaitForSeconds(0.5f);
         buttonPress++;
         areYouSure.SetActive(true);
         yesOpened = true;

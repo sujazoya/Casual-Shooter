@@ -10,23 +10,28 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField] Image healthImage;
     public float health;
     float maxHealth=100;
-    UIManager uIManager;
+    [SerializeField ] UIManager uIManager;
+    Animator animator;
+    BasicBehaviour basicBehaviour;
+    [SerializeField] Collider[] bodyColliders;
+    private void Awake()
+    {
+        basicBehaviour = GetComponent<BasicBehaviour>();
+        animator = GetComponent<Animator>();
+        ResetPlayer();
+    }
     // Start is called before the first frame update
     void Start()
     {
-        health = maxHealth;
-        UpdateHealth();
-        uIManager = FindObjectOfType<UIManager>();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+       
+    }    
     public void TakeDamage(float damage,float wait)
-    {
+    {              
         StartCoroutine(MakeDamages(damage, wait));
+        if (basicBehaviour.IsGrounded())
+        {
+            animator.SetTrigger("hit");
+        }
     }
     void UpdateHealth()
     {
@@ -47,14 +52,43 @@ public class PlayerHealth : MonoBehaviour
             yield return new WaitForSeconds(0.4f);
             hit.SetActive(false);
         }
-        else
+        else if (health <= 0)
         {
-            uIManager.ShowGameOver_Warn();
+            
             //Die();
         }
     }
+    public void ResetPlayer()
+    {
+        bodyColliders[0].enabled = false;
+        bodyColliders[1].enabled = true;
+        health = maxHealth;
+        UpdateHealth();
+        Invoke("LateReplay", 2);
+
+    }
+    void LateReplay()
+    {
+        Game.playerIdDead = false;
+        Game.gameStatus = Game.GameStatus.isPlaying;
+    }
     void Die()
     {
-        uIManager.OnGameover();
+        uIManager.ShowGameOver_Warn();
+        gameObject.SetActive(false);
+        //uIManager.OnGameover();
+    }
+    private void LateUpdate()
+    {
+          if (health <= 0&& !Game.playerIdDead)
+        {
+            Game.gameStatus = Game.GameStatus.isGameover;
+            Game.playerIdDead = true;
+            bodyColliders[0].enabled = true;
+            bodyColliders[1].enabled = false;
+            animator.SetTrigger("die");
+            Invoke("Die",3);          
+            //Die();
+        }
     }
 }

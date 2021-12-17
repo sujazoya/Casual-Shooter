@@ -105,6 +105,8 @@ public class ShootBehaviour : GenericBehaviour
 	// Update is used to set features regardless the active behaviour.
 	private void Update()
 	{
+		if (Game.playerIdDead)
+			return;
 		if (!Application.isMobilePlatform)
 		{
 			if (Input.GetMouseButton(0) && !isShooting && activeWeapon > 0 && burstShotCount == 0)

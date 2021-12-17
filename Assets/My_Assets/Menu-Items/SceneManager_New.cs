@@ -9,6 +9,7 @@ public class SceneManager_New : MonoBehaviour
     public static OnSceneLoaded onSceneLoaded;
     public static Scene scene;
     public static LoadSceneMode mode;
+    Level_Loader _Loader;
     // Start is called before the first frame update
     void Start()
     {
@@ -16,10 +17,15 @@ public class SceneManager_New : MonoBehaviour
         {
             onSceneLoaded( scene,  mode);
         }
+        _Loader = FindObjectOfType<Level_Loader>();
     }
     public void Restart()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
-   
+
+   public void LoadScene(string name)
+    {
+        _Loader.LoadLevel(name);
+    }
 }

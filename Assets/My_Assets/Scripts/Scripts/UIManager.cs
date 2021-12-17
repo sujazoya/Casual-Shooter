@@ -58,6 +58,8 @@ public class UIManager : MonoBehaviour
 	[SerializeField] GameObject settingPanel;
 	public GameObject gameover_warnPanel;
 	[SerializeField] PlayerHealth playerHealth;
+	[SerializeField]GameController_Grappling gameController;
+	[SerializeField] GameObject assegeEffect;
 	public IEnumerator ActiveBack(bool value,float wait)
     {
 		yield return new WaitForSeconds(wait);
@@ -66,13 +68,12 @@ public class UIManager : MonoBehaviour
 
 	void Start ()
 	{
-		//reset progress value
-		//progressFillImage.fillAmount = 0f;	
-		//if (Game.retryCount == 0)
-  //      {
-		ShowUI(Game.Menu);
+        //reset progress value
+        //progressFillImage.fillAmount = 0f;
+       
+        if (Game.retryCount == 0) { ShowUI(Game.Menu); }		
 	    StartCoroutine(MusicManager.PlayMusic("menu",2));
-		//}
+		
 		pauseButton.onClick.AddListener(OnPause);		
 		massegeItems.closeButton.onClick.AddListener(CloseMassegeCanvas);
 		CloseMassegeCanvas();
@@ -94,11 +95,12 @@ public class UIManager : MonoBehaviour
     {
 		massegeItems.massegeCanvas.SetActive(false);
 	}
-	public void ShowMassege(string header,string massege)
-    {
+	public void ShowMassege(string header,string massege,bool value)
+    {		
 		massegeItems.massegeCanvas.SetActive(true);
 		massegeItems.header.text = header;
 		massegeItems.massege.text = massege;
+        if (value == false) { assegeEffect.SetActive(false); } else { assegeEffect.SetActive(true); }
 	}
 	void OffAllUIObjects()
 	{
@@ -179,8 +181,7 @@ public class UIManager : MonoBehaviour
 	IEnumerator Gameover()
     {		
 		yield return new WaitForSeconds(1.2f);
-		//StartCoroutine(ActiveBack(true, 0));
-		//Game.retryCount=0;
+		//StartCoroutine(ActiveBack(true, 0));		
 		Text High_Score_num = UIObject(Game.Gameover).transform.Find("High_Score_num").GetComponent<Text>();
 		Text header = UIObject(Game.Gameover).transform.Find("header").GetComponent<Text>();
 	    Text coin_num = UIObject(Game.Gameover).transform.Find("coin_num").GetComponent<Text>();
@@ -205,6 +206,12 @@ public class UIManager : MonoBehaviour
 			header.text = "Gameover";
 			MusicManager.PlaySfx("gameover");
 		}
+		StartCoroutine(RequestIntAd(2f));
+	}
+	IEnumerator RequestIntAd(float after)
+    {
+		yield return new WaitForSeconds(after);
+		AdmobAdmanager.Instance.ShowInterstitial();
 	}
 	public void ShowGameOver_Warn()
     {
@@ -219,9 +226,9 @@ public class UIManager : MonoBehaviour
 	}
 	public void MakeResumeTheGame()
 	{
-		playerHealth.health = 100;
-		gameover_warnPanel.SetActive(false);
-		Game.gameStatus = Game.GameStatus.isPlaying;
+		playerHealth.gameObject.SetActive(true);
+		playerHealth.ResetPlayer();
+		gameover_warnPanel.SetActive(false);		
 		MusicManager.UnpauseMusic();
 	}
 	public void OnLevelWon()
@@ -233,7 +240,7 @@ public class UIManager : MonoBehaviour
 	IEnumerator LevelWon()
 	{
 		yield return new WaitForSeconds(.2f);		
-		//Game.retryCount = 0;
+		Game.retryCount = 0;
 		Button retryButton = UIObject(Game.GameWin).transform.Find("Retry").GetComponent<Button>();
 		retryButton.onClick.AddListener(RetryLevel);
 		Button homeButton = UIObject(Game.GameWin).transform.Find("home").GetComponent<Button>();
@@ -245,20 +252,21 @@ public class UIManager : MonoBehaviour
 	}
 	public void RetryLevel()
     {
-		//Game.retryCount++;
+		Game.retryCount++;
 		SceneManager.LoadScene (SceneManager.GetActiveScene ().buildIndex);		
     }
 	IEnumerator Retry()
     {
 	
-		yield return new WaitForSeconds(2);
-        //SceneManager.LoadScene (SceneManager.GetActiveScene ().buildIndex);
-  //      if (Game.retryCount > 0)
-  //      {
-		//	//levelHanler.ActivateLevel(Game.CurrentLevel);
-		//}
-		
-	}
+		yield return new WaitForSeconds(0.5f);		
+		//SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+		if (Game.retryCount > 0)
+        {
+			gameController.Play();
+            //levelHanler.ActivateLevel(Game.CurrentLevel);
+        }
+
+    }
 	void OnResume()
     {
 		Game.gameStatus = Game.GameStatus.isPlaying;
@@ -279,10 +287,11 @@ public class UIManager : MonoBehaviour
 		yield return new WaitForSeconds(1.2F);		
 		Button resumeButton = UIObject(Game.Pause).transform.Find("RESUME").GetComponent<Button>();
 		resumeButton.onClick.AddListener(OnResume);
+		StartCoroutine(RequestIntAd(2f));
 	}
 	void OnEnable()
 	{		
-		//SceneManager_New.onSceneLoaded += OnSceneLoaded;
+		SceneManager_New.onSceneLoaded += OnSceneLoaded;
 	}
 
 	// called second
@@ -297,9 +306,10 @@ public class UIManager : MonoBehaviour
 	// called when the game is terminated
 	void OnDisable()
 	{		
-		//SceneManager_New.onSceneLoaded -= OnSceneLoaded;
+		SceneManager_New.onSceneLoaded -= OnSceneLoaded;
 	}
-	public void ShowShop()
+    #region SHOP
+    public void ShowShop()
     {
 		ShowUI(Game.shop);
     }
@@ -315,13 +325,13 @@ public class UIManager : MonoBehaviour
 			Game.AKBullet += 27;
 			ShowMassege
 				("hurray"
-				, "You Purchased AK47 23 Bullets");
+				, "You Purchased AK47 23 Bullets",false);
         }
         else
         {
 			ShowMassege
 				("Oh No!"
-				, "You Don't Have Enough Credits");
+				, "You Don't Have Enough Credits", false);
 		}
     }
 	public void PurchaseRifleMag()
@@ -332,13 +342,13 @@ public class UIManager : MonoBehaviour
 			Game.RifleBullet += 23;
 			ShowMassege
 				("hurray"
-				, "You Purchased Rifle 23 Bullets");
+				, "You Purchased Rifle 23 Bullets", false);
 		}
 		else
 		{
 			ShowMassege
 				("Oh No!"
-				, "You Don't Have Enough Credits");
+				, "You Don't Have Enough Credits", false);
 		}
 	}
 	public void PurchasePistolMag()
@@ -346,16 +356,16 @@ public class UIManager : MonoBehaviour
 		if (Game.TotalCoins >= Game.pistolBulletPrice)
 		{
 			Game.TotalCoins -= Game.pistolBulletPrice;
-			Game.PistolBullet += 9;
+			Game.PistolBullet += 18;
 			ShowMassege
 				("hurray"
-				, "You Purchased Pistol 9 Bullets");
+				, "You Purchased Pistol 18 Bullets", false);
 		}
 		else
 		{
 			ShowMassege
 				("Oh No!"
-				, "You Don't Have Enough Credits");
+				, "You Don't Have Enough Credits", false);
 		}
 	}
 	public void PurchaseLife()
@@ -366,35 +376,37 @@ public class UIManager : MonoBehaviour
 			Game.Life += 1;
 			ShowMassege
 				("hurray"
-				, "You Purchased 1 Life");
+				, "You Purchased 1 Life", false);
 		}
 		else
 		{
 			ShowMassege
 				("Oh No!"
-				, "You Don't Have Enough Credits");
+				, "You Don't Have Enough Credits", false);
+	
 		}
 	}
-	public void RewardTheUser()
+    #endregion
+    public void RewardTheUser()
     {
 		Game.TotalCoins += 100;
 		ShowMassege
 				("Congratulation"
-				, "You Won 100 Credits");
+				, "You Won 100 Credits", true);
 	}
 	public void RewardTheUser_Half()
 	{
 		Game.TotalCoins += 50;
 		ShowMassege
 				("Congratulation"
-				, "You Won 50 Credits");
+				, "You Won 50 Credits", true);
 	}
 
 	public void WarnAdClosed()
 	{
 		ShowMassege
 				("Sorry"
-				, "You Closed The AD So You Will Not Get Any Credits");
+				, "You Closed The AD So You Will Not Get Any Credits", false);
 	}
 	
 }

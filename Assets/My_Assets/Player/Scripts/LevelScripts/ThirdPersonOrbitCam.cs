@@ -63,9 +63,11 @@ public class ThirdPersonOrbitCam : MonoBehaviour
 
 	void Update()
 	{
-        // Get mouse movement to orbit the camera.
-        // Mouse:
-        if (!Application.isMobilePlatform)
+		if (Game.playerIdDead)
+			return;
+		// Get mouse movement to orbit the camera.
+		// Mouse:
+		if (!Application.isMobilePlatform)
         {
 			angleH += Mathf.Clamp(Input.GetAxis("Mouse X"), -1, 1) * gameController.rotate_Slider.value;
 			angleV += Mathf.Clamp(Input.GetAxis("Mouse Y"), -1, 1) * gameController.rotate_Slider.value;

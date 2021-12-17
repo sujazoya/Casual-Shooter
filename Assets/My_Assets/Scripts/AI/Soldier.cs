@@ -29,11 +29,12 @@ public class Soldier : MonoBehaviour
     [SerializeField] GameObject lazer;
     public LayerMask playerMask;
     public float damage = 5;
+    EnemyHealth enemyHealth;
     // private SniperManager sniperManager;
     // Start is called before the first frame update
     void Awake()
     {
-      
+        enemyHealth = transform.GetComponent<EnemyHealth>();
     }
     //public void Damage(float damage)
     //{
@@ -45,22 +46,24 @@ public class Soldier : MonoBehaviour
     {
         // waypoints_Handler = GameObject.FindGameObjectWithTag("Waypoint").GetComponent<waypoints_Handler>();
         //if (waypoints_Handler) { waypoints = waypoints_Handler.waypoints; }
-        player = GameObject.FindGameObjectWithTag("Player").transform;
+      
         anim = GetComponent<Animator>();
         gameController=FindObjectOfType<GameController_Grappling>();
         if (muzzle) { muzzle.SetActive(false); }
         if (lazer) { lazer.SetActive(false); }
+        StartCoroutine(WaitAndGetPlayer());
         //  player = GameObject.FindGameObjectWithTag("Player").transform;        
     }
-    void OnEnable()
+    IEnumerator WaitAndGetPlayer()
     {
+        yield return new WaitUntil(() => Game.gameStatus == Game.GameStatus.isPlaying);
         player = GameObject.FindGameObjectWithTag("Player").transform;
-        // waypoints = waypoints_Handler.wayPoints;
-        // anim.SetBool("Idle", true);
-    }
+    }  
     // Update is called once per frame
     void Update()
-    {
+    {        
+        if (Game.gameStatus != Game.GameStatus.isPlaying||!player|| enemyHealth.health <= 0)
+            return;
         // player = GameObject.FindGameObjectWithTag("Player").transform;
         Vector3 direction = player.position - this.transform.position;
         direction.y = 0;
@@ -131,34 +134,40 @@ public class Soldier : MonoBehaviour
             state = "patrol";
         }
     }
-    bool value;
+    //bool value;
     bool Forward()
-    {
-       
+    {       
         Ray ray = new Ray(transform.position, transform.forward );
         RaycastHit hit = default(RaycastHit);
         // Target was hit.
         if (Physics.Raycast(ray, out hit, 500f, playerMask))
         {
-            if (hit.collider.transform != this.transform)
-            {
-                // Handle shot effects on target.
-                if (hit.collider.transform.tag == Game.playerTag)
-                {
-                    if (lazer) { lazer.SetActive(true); }
-                    value=true ;
-                }
-                else
-                {
-                    if (lazer) { lazer.SetActive(false); }
-                    value= false;
-                }
+            if (lazer) { lazer.SetActive(true); }
+            //value=true ;
+            //if (hit.collider.transform != this.transform)
+            //{
+            //    // Handle shot effects on target.
+            //    if (hit.collider.transform.tag == Game.playerTag)
+            //    {
+            //        if (lazer) { lazer.SetActive(true); }
+            //        value=true ;
+            //    }
+            //    else
+            //    {
+            //        if (lazer) { lazer.SetActive(false); }
+            //        value= false;
+            //    }
 
-                //Call the damage behaviour of target if exists.
-              
-            }
+            //    //Call the damage behaviour of target if exists.
+
+            //}
+            return true; 
         }
-        return value;
+        else
+        {
+            if (lazer) { lazer.SetActive(false); }
+            return false;
+        }        
         //var relativePoint = transform.InverseTransformPoint(player.position);
       
     }
@@ -169,9 +178,10 @@ public class Soldier : MonoBehaviour
         anim.SetTrigger("shoot");
         if (muzzle) { muzzle.SetActive(true); }
         gameController.ActiveBulletTrail(muzzle.transform);
+        float time = 1 / Vector3.Distance(player.transform.position, transform.position);
         if (player.GetComponent<PlayerHealth>())
         {
-            player.GetComponent<PlayerHealth>().TakeDamage(damage, 0.7f);
+            player.GetComponent<PlayerHealth>().TakeDamage(damage, time);
         }
         yield return new WaitForSeconds(waitBeforeShot);
         shoot = true;        

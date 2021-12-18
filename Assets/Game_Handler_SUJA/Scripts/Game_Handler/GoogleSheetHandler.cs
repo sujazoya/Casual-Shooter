@@ -69,6 +69,7 @@ public class GoogleSheetHandler
     //NEW IMPLEMENT-----------17-12-21
     public static string show_rewarded_onrequest_count;
     public static bool show_rewarded;
+    public static bool show_inhouse_ad;
     //---------------------------------------------------
     public static string terms_url;
     public static bool has_terms;
@@ -108,6 +109,7 @@ public class GoogleSheetHandler
 
         ad_cancel_buton = BooleanChecker(info["ad_cancel_buton"].Value);
         net_warn_cancel_buton = BooleanChecker(info["net_warn_cancel_buton"].Value);
+        show_inhouse_ad = BooleanChecker(info["show_inhouse_ad"].Value);
 
         show_g_banner1 = BooleanChecker(info["show_g_banner1"].Value);
         show_g_banner2 = BooleanChecker(info["show_g_banner2"].Value);

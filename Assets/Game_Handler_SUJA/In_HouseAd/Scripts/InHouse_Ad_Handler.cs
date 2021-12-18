@@ -55,7 +55,6 @@ public class InHouse_Ad_Handler : MonoBehaviour
     }
     void OnAdCompleted()
     {
-        StopCoroutine("ShowRewardedInterstitialStarting_Popup");
         DestroyAd();
         adCompleted = true;
         if (items.enableOnPlay) { items.enableOnPlay.SetActive(false); }
@@ -67,18 +66,18 @@ public class InHouse_Ad_Handler : MonoBehaviour
    void DestroyAd()
     {
         currentAd = null;
-        items.logo.sprite=null;
-        items.image1.sprite = null;
-        items.image2.sprite = null;
-        items.image3.sprite = null;
-        items.image4.sprite = null;
-        items.app_name.text = string.Empty;
-        items.description.text = string.Empty;
+        if (items.logo) { items.logo.sprite = null; }
+        if (items.image1) { items.image1.sprite = null; }
+        if (items.image2) { items.image2.sprite = null; }
+        if (items.image3) { items.image3.sprite = null; }
+        if (items.image4) { items.image4.sprite = null; }
+        if (items.app_name) { items.app_name.text = string.Empty; }
+        if (items.description) { items.description.text = string.Empty; }
         appLink = string.Empty;
     }
     void OnAdClosed()
     {
-        StopCoroutine("ShowRewardedInterstitialStarting_Popup");
+        if (this!=null&& PopupIsRunning) { StopCoroutine("ShowRewardedInterstitialStarting_Popup"); }
         DestroyAd();
         if (items.enableOnPlay) { items.enableOnPlay.SetActive(false); }
         if (items.body) { items.body.SetActive(false); }
@@ -155,7 +154,7 @@ public class InHouse_Ad_Handler : MonoBehaviour
     }
     public void ShowInHouseAd()
     {
-        StopCoroutine("ShowRewardedInterstitialStarting_Popup");
+        if (PopupIsRunning) { StopCoroutine("ShowRewardedInterstitialStarting_Popup"); }       
         if (isReadyToShow)
         {
             if (items.body) { items.body.SetActive(true); }
@@ -176,8 +175,10 @@ public class InHouse_Ad_Handler : MonoBehaviour
     {
         inHouseAdManager.CallOnAdCompleted();
     }
+    bool PopupIsRunning;
     IEnumerator ShowRewardedInterstitialStarting_Popup()
     {
+        PopupIsRunning = true;
         videoLenth = 16;
         adCompleted = false;
         items.timerText.text = videoLenth.ToString();
@@ -193,7 +194,7 @@ public class InHouse_Ad_Handler : MonoBehaviour
             yield return new WaitForSeconds(1);           
         }
         if (t == 0) { adCompleted = true; }
-        videoLenth = 0;       
-        StopAllCoroutines();
+        videoLenth = 0;
+        PopupIsRunning = false;
     }
 }

@@ -27282,6 +27282,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rewardedAdManager: {fileID: 0}
+  inHouse_Ad: {fileID: 0}
   onRewarded:
     m_PersistentCalls:
       m_Calls:
@@ -27297,6 +27298,34 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   onClose:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 778199926375491667}
+        m_MethodName: GoForGameOver
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnInHouseAdComplete:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 778199926375491667}
+        m_MethodName: MakeResumeTheGame
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnInHouseAdClosed:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 778199926375491667}
@@ -29798,6 +29827,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rewardedAdManager: {fileID: 0}
+  inHouse_Ad: {fileID: 0}
   onRewarded:
     m_PersistentCalls:
       m_Calls:
@@ -29813,6 +29843,34 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   onClose:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 778199926375491667}
+        m_MethodName: WarnAdClosed
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnInHouseAdComplete:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 778199926375491667}
+        m_MethodName: RewardTheUser
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnInHouseAdClosed:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 778199926375491667}

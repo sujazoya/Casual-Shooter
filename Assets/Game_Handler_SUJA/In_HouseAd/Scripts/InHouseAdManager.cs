@@ -14,9 +14,9 @@ public class InHouseAdManager : MonoBehaviour
     public static int ad_counts_we_have;     
     public static InHouseAdManager Instance;
 
-   public List<InHouse_Ad> my_Ads;
-    public bool show_inhouse_ad;
-   [SerializeField] int adIndex=0;
+    public List<InHouse_Ad> my_Ads;
+    public static bool show_inhouse_ad;
+    [SerializeField] int adIndex=0;
     [HideInInspector] public bool apiConfirmed;
     private void Awake()
     {
@@ -74,10 +74,14 @@ public class InHouseAdManager : MonoBehaviour
         {
             yield return new WaitUntil(() => Application.internetReachability == NetworkReachability.ReachableViaCarrierDataNetwork ||
             Application.internetReachability == NetworkReachability.ReachableViaLocalAreaNetwork);
+
+
+            yield return new WaitUntil(() => GoogleSheetHandler.googlesheetInitilized == true);
             RetriveDataFromAPI();
         }
         else
         {
+            yield return new WaitUntil(() => GoogleSheetHandler.googlesheetInitilized == true);
             RetriveDataFromAPI();
         }
     }
@@ -132,7 +136,7 @@ public class InHouseAdManager : MonoBehaviour
         JSONNode image2Link_info = JSON.Parse(snapshot)[5];
         JSONNode image3Link_info = JSON.Parse(snapshot)[6];
         JSONNode image4Link_info = JSON.Parse(snapshot)[7];
-        show_inhouse_ad          = BooleanChecker(appLink_info["show_inhouse_ad"].Value);
+        show_inhouse_ad = GoogleSheetHandler.show_inhouse_ad;
         ad_counts_we_have        = int.Parse(appLink_info["ad_counts_we_have"].Value.ToString());
         if (show_inhouse_ad == true)
         {

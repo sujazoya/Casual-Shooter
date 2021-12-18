@@ -1185,6 +1185,7 @@ GameObject:
   - component: {fileID: 1552578305252788813}
   - component: {fileID: 1552578305252788817}
   - component: {fileID: 1552578305252788812}
+  - component: {fileID: 4622137653577111150}
   m_Layer: 5
   m_Name: InHouseAdLandscape
   m_TagString: Untagged
@@ -1316,6 +1317,21 @@ MonoBehaviour:
     Video_Image: {fileID: 1552578306607886188}
     enableOnPlay: {fileID: 1552578304764720225}
   isReadyToShow: 0
+--- !u!114 &4622137653577111150
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1552578305252788811}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16ec866cf1598b143b7c321e66180b3e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rewardedButtons:
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!1 &1552578305432339728
 GameObject:
   m_ObjectHideFlags: 0

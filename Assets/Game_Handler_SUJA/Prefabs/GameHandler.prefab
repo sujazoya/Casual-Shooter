@@ -3568,6 +3568,7 @@ MonoBehaviour:
     ad_dialog_title: {fileID: 4329699969294858040}
     ad_message: {fileID: 5438418094130615247}
     notification_Panel: {fileID: 5438418092801374658}
+    app_new_icon: {fileID: 0}
     UpdateButton: {fileID: 5438418093841575256}
     cancelButton: {fileID: 5438418094823137104}
     update_dialog_title: {fileID: 5438418093051348651}
@@ -5653,8 +5654,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -1582703761720647702, guid: 141ed8ddc07c0964bae52a0fe5be7072,
-    type: 3}
+  m_Sprite: {fileID: -38136371514356628, guid: 868a097f78bed3e4aae42aedd143af02, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -6065,7 +6065,7 @@ PrefabInstance:
     - target: {fileID: 5540482629160796113, guid: 640586bf6d0b3ff4d8a2f13c77babb77,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5540482629160796117, guid: 640586bf6d0b3ff4d8a2f13c77babb77,
         type: 3}

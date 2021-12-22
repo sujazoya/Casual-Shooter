@@ -24,7 +24,7 @@ namespace suja
         #endregion
         #region UPDATE NOTIFICATION
         public GameObject notification_Panel;
-        //private Image app_new_icon;
+       public Image app_new_icon;
        public Button UpdateButton;
        public Button cancelButton;
        public Text update_dialog_title;
@@ -94,7 +94,8 @@ namespace suja
            items.update_title.text = GoogleSheetHandler.update_title;
            items.button_text.text = GoogleSheetHandler.button_text;
            items.update_version_name.text = GoogleSheetHandler.update_version_name;
-           items.UpdateButton.onClick.AddListener(OpenApp);
+           StartCoroutine(GetImage(GoogleSheetHandler.update_icon_url, items.app_new_icon));
+            items.UpdateButton.onClick.AddListener(OpenApp);
            items. cancelButton.onClick.AddListener(CncelNotif);
             if (GoogleSheetHandler.update_show_cancel == true)
             {
@@ -111,7 +112,7 @@ namespace suja
             if (!items.update_dialog_title) { items.update_dialog_title = items.notification_Panel.transform.Find("update_dialog_title").GetComponent<Text>(); }
             if (!items.update_version_name) { items.update_version_name = items.notification_Panel.transform.Find("update_version_name").GetComponent<Text>(); }
             if (!items.update_message) { items.update_message = items.notification_Panel.transform.Find("update_message").GetComponent<Text>(); } 
-            if (!items.app_icon) { items.app_icon = items.notification_Panel.transform.Find("Logo__/mask/logo").GetComponent<Image>(); } 
+            if (!items.app_new_icon) { items.app_new_icon = items.notification_Panel.transform.Find("Logo__/mask/logo").GetComponent<Image>(); } 
             if (!items.UpdateButton) { items.UpdateButton = items.notification_Panel.transform.Find("bottons/Update_Button").GetComponent<Button>(); }
             if (!items.cancelButton) { items.cancelButton = items.notification_Panel.transform.Find("bottons/Cancel_Button").GetComponent<Button>(); }           
             if (!items.update_title) { items.update_title = items.notification_Panel.transform.Find("update_title").GetComponent<Text>(); } 

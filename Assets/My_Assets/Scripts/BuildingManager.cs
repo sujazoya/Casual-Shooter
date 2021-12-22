@@ -26,14 +26,15 @@ public class BuildingManager : MonoBehaviour
         {            
             for (int i = 0; i < currentBuildings.Count; i++)
             {
-                CheckBuildingDistance(currentBuildings[i].transform);
+                BuildingDistance(currentBuildings[i].transform);
             }
         }
         yield return new WaitForSeconds(1);
         StartCoroutine(CheckBuilding());
     }
-    void CheckBuildingDistance(Transform target)
+    float BuildingDistance(Transform target)
     {
+        float distance = Vector3.Distance(transform.position, target.position);
         //Vector3 pos = new Vector3(transform.position.x + Random.insideUnitSphere.x * 150,
         //                    transform.position.y,
         //                    transform.position.z + Random.insideUnitSphere.z * 150);
@@ -45,6 +46,7 @@ public class BuildingManager : MonoBehaviour
         {
             target.gameObject.GetComponent<Building>().SetActive(false);
         }
+        return distance;
     }
     void CreatBuildings()
     {
@@ -65,16 +67,34 @@ public class BuildingManager : MonoBehaviour
         //}       
         StartCoroutine(CheckBuilding());
     }
+    [HideInInspector] public List<GameObject> buildingsNearPlayer;
     void DestroyBuildingsNearPlayer()
     {
-        hitColliders = Physics.OverlapSphere(transform.position, 50f);
-        foreach (var hitCollider in hitColliders)
-        {
-            if (hitCollider.gameObject.tag == "building")
+
+        for (int i = 0; i < currentBuildings.Count; i++)
+        {  
+           
+            if(BuildingDistance(currentBuildings[i].transform) < 50)
             {
-                Destroy(hitCollider.transform.parent.gameObject);
+                buildingsNearPlayer.Add(currentBuildings[i]);
             }
         }
+        if (buildingsNearPlayer.Count > 0)
+        {
+            for (int i = 0; i < buildingsNearPlayer.Count; i++)
+            {
+                buildingsNearPlayer[i].GetComponent<Building>().SetActive(false);
+            }
+        }
+
+        //hitColliders = Physics.OverlapSphere(transform.position, 50f);
+        //foreach (var hitCollider in hitColliders)
+        //{
+        //    if (hitCollider.gameObject.tag == "building")
+        //    {
+        //        Destroy(hitCollider.transform.parent.gameObject);
+        //    }
+        //}
     }
     int currentIndex()
     {

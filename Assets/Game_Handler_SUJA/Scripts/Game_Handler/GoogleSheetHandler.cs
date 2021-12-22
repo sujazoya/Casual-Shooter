@@ -17,8 +17,7 @@ public class GoogleSheetHandler
     public static string ad_banner_url;
     public static string ad_dialog_title;
     public static string ad_icon_url;
-    public static string ad_message;
-    public static bool isAds;
+    public static string ad_message;   
     public static bool isNotification;
     public static bool isUpdate;
     public static string not_dialog_title;
@@ -29,6 +28,9 @@ public class GoogleSheetHandler
     public static string update_message;
     public static bool update_show_cancel;
     public static string update_title;
+    public static string update_icon_url;
+
+
     public static string update_version_name;
     public static string extraStringPara1;
     public static string extraStringPara2;
@@ -57,8 +59,8 @@ public class GoogleSheetHandler
     public static bool show_g_rewarded1;
     public static bool show_g_rewarded2;
     public static bool show_g_rewarded3;
-    public static bool show_loading;
-    public static bool show_startapp;
+    //public static bool show_loading;
+    //public static bool show_startapp;
     public static string ad1_image;
     public static string ad1_url;
     public static string ad2_image;
@@ -73,7 +75,8 @@ public class GoogleSheetHandler
     //---------------------------------------------------
     public static string terms_url;
     public static bool has_terms;
-
+    public static int iha_starting_count;
+    public static int ad_counts_we_have;
     public static bool googlesheetInitilized=false;
 
     private static int deviceType = 0;
@@ -88,14 +91,15 @@ public class GoogleSheetHandler
     public static void GetDataFromAPI(string snapshot)
     {
         JSONNode info = JSON.Parse(snapshot)[0];
-        show_ad_as_index = BooleanChecker(info["show_ad_as_index"].Value);
-        show_rewarded = BooleanChecker(info["show_rewarded"].Value);
-        isAds = BooleanChecker(info["isAds"].Value);
+        JSONNode info1 = JSON.Parse(snapshot)[1];
+        JSONNode info2 = JSON.Parse(snapshot)[2];
+         
         isNotification = BooleanChecker(info["isNotification"].Value);
         isUpdate = BooleanChecker(info["isUpdate"].Value);
         not_dialog_title = info["not_dialog_title"].Value.ToString();
         not_message = info["not_message"].Value.ToString();
         button_text = info["button_text"].Value.ToString();
+        update_icon_url = info["update_icon_url"].Value.ToString();
         not_show_dialog = BooleanChecker(info["not_show_dialog"].Value);
         update_app_url = info["update_app_url"].Value.ToString();
         update_dialog_title = info["update_dialog_title"].Value.ToString();
@@ -103,64 +107,83 @@ public class GoogleSheetHandler
         update_show_cancel = BooleanChecker(info["update_show_cancel"].Value);
         update_title = info["update_title"].Value.ToString();
         update_version_name = info["update_version_name"].Value.ToString();
-        showAds = BooleanChecker(info["showAds"].Value);
+       
         other_games= info["other_games"].Value.ToString();
         ad_show_onrequest_count = info["ad_show_onrequest_count"].Value.ToString();
-
         ad_cancel_buton = BooleanChecker(info["ad_cancel_buton"].Value);
         net_warn_cancel_buton = BooleanChecker(info["net_warn_cancel_buton"].Value);
-        show_inhouse_ad = BooleanChecker(info["show_inhouse_ad"].Value);
+        
 
-        show_g_banner1 = BooleanChecker(info["show_g_banner1"].Value);
-        show_g_banner2 = BooleanChecker(info["show_g_banner2"].Value);
-        show_g_inter1 = BooleanChecker(info["show_g_inter1"].Value);
-        show_g_inter2 = BooleanChecker(info["show_g_inter2"].Value);
-        show_g_inter3 = BooleanChecker(info["show_g_inter3"].Value);
-        show_g_rewarded1 = BooleanChecker(info["show_g_rewarded1"].Value);
-        show_g_rewarded2 = BooleanChecker(info["show_g_rewarded2"].Value);
-        show_g_rewarded3 = BooleanChecker(info["show_g_rewarded3"].Value);
+        #region AD'S SECTION
+            showAds          = BooleanChecker(info["showAds"].Value);
+            show_ad_as_index = BooleanChecker(info["show_ad_as_index"].Value);
+            show_rewarded    = BooleanChecker(info["show_rewarded"].Value);
+            show_rewarded_onrequest_count = info["show_rewarded_onrequest_count"].Value.ToString();
 
-        show_g_rewardedint1 = BooleanChecker(info["show_g_rewardedint1"].Value);
-        show_g_rewardedint2 = BooleanChecker(info["show_g_rewardedint2"].Value);
-        show_g_rewardedint3 = BooleanChecker(info["show_g_rewardedint3"].Value);
+            #region BANNER AD
+            show_g_banner1 = BooleanChecker(info["show_banner"].Value);
+            show_g_banner2 = BooleanChecker(info1["show_banner"].Value);
+            g_banner1      = info["banner_id"].Value.ToString();
+            g_banner2      = info1["banner_id"].Value.ToString();
+            #endregion
 
-        show_loading = BooleanChecker(info["show_loading"].Value);
-        show_startapp = BooleanChecker(info["show_startapp"].Value);
+            #region INTERSITIAL AD
+            show_g_inter1 = BooleanChecker(info["show_interstitial"].Value);
+            show_g_inter2 = BooleanChecker(info1["show_interstitial"].Value);
+            show_g_inter3 = BooleanChecker(info2["show_interstitial"].Value);
+            g_inter1      = info["interstitial_id"].Value.ToString();
+            g_inter2      = info1["interstitial_id"].Value.ToString();
+            g_inter3      = info2["interstitial_id"].Value.ToString();
+            #endregion
+
+            #region REWARDED AD
+            show_g_rewarded1 = BooleanChecker(info["use_rewarded"].Value);
+            show_g_rewarded2 = BooleanChecker(info1["use_rewarded"].Value);
+            show_g_rewarded3 = BooleanChecker(info2["use_rewarded"].Value);
+            g_rewarded1      = info["rewarded_id"].Value.ToString();
+            g_rewarded2      = info1["rewarded_id"].Value.ToString();
+            g_rewarded3      = info2["rewarded_id"].Value.ToString();
+            #endregion
+
+            #region REWARDED INTERSTITIAL AD
+            show_g_rewardedint1 = BooleanChecker(info["show_rewardedint"].Value);
+            show_g_rewardedint2 = BooleanChecker(info1["show_rewardedint"].Value);
+            show_g_rewardedint3 = BooleanChecker(info2["show_rewardedint"].Value);
+            g_rewardedint1      = info["rewaded_int_id"].Value.ToString();
+            g_rewardedint2      = info1["rewaded_int_id"].Value.ToString();
+            g_rewardedint3      = info2["rewaded_int_id"].Value.ToString();
+            #endregion
+        #endregion AD'S SECTION
+        //show_loading = BooleanChecker(info["show_loading"].Value);
+        //show_startapp = BooleanChecker(info["show_startapp"].Value);
 
         ad_app_name = info["ad_app_name"].Value.ToString();
-        ad_app_short_desc = info["ad_app_short_desc"].Value.ToString();
-        ad_banner_url = info["ad_banner_url"].Value.ToString();
-        ad_dialog_title = info["ad_dialog_title"].Value.ToString();
-        ad_icon_url = info["ad_icon_url"].Value.ToString();
-        ad_message = info["ad_message"].Value.ToString();
+        ad_app_short_desc   = info["ad_app_short_desc"].Value.ToString();
+        ad_banner_url       = info["ad_banner_url"].Value.ToString();
+        ad_dialog_title     = info["ad_dialog_title"].Value.ToString();
+        ad_icon_url         = info["ad_icon_url"].Value.ToString();
+        ad_message          = info["ad_message"].Value.ToString();
 
-        terms_url = info["terms_url"].Value.ToString();
-        has_terms = BooleanChecker(info["has_terms"].Value);
+        terms_url           = info["terms_url"].Value.ToString();
+        has_terms           = BooleanChecker(info["has_terms"].Value);
 
-        extraStringPara1 = info["extraStringPara1"].Value.ToString();
-        extraStringPara2 = info["extraStringPara2"].Value.ToString();
-        g_app_id = info["g_app_id"].Value.ToString();
-        ad_app_url = info["ad_app_url"].Value.ToString();     
+        extraStringPara1    = info["extraStringPara1"].Value.ToString();
+        extraStringPara2    = info["extraStringPara2"].Value.ToString();
+        g_app_id            = info["g_app_id"].Value.ToString();
+        ad_app_url          = info["ad_app_url"].Value.ToString(); 
 
-        g_banner1 = info["g_banner1"].Value.ToString();
-        g_banner2 = info["g_banner2"].Value.ToString();
        
-        g_inter1 = info["g_inter1"].Value.ToString();
-        g_inter2 = info["g_inter2"].Value.ToString();
-        g_inter3 = info["g_inter3"].Value.ToString();
-        g_rewarded1 = info["g_rewarded1"].Value.ToString();
-        g_rewarded2 = info["g_rewarded2"].Value.ToString();
-        g_rewarded3 = info["g_rewarded3"].Value.ToString();
-
-        g_rewardedint1 = info["g_rewardedint1"].Value.ToString();
-        g_rewardedint2 = info["g_rewardedint2"].Value.ToString();
-        g_rewardedint3 = info["g_rewardedint3"].Value.ToString();
-        show_rewarded_onrequest_count = info["show_rewarded_onrequest_count"].Value.ToString();
 
         sa_ad_count = info["sa_ad_count"].Value.ToString();
         ad1_image = info["ad1_image"].Value.ToString();
         ad1_url = info["ad1_url"].Value.ToString();
         ad2_image = info["ad2_image"].Value.ToString();
+
+        #region IN HOUSE AD
+        show_inhouse_ad = BooleanChecker(info["show_inhouse_ad"].Value);
+        iha_starting_count = int.Parse( info["iha_starting_count"].Value.ToString());
+        ad_counts_we_have = int.Parse(info["ad_counts_we_have"].Value.ToString());
+        # endregion IN HOUSE AD
 
         googlesheetInitilized = true;       
         GameHandler.Instance.CheckForNtification();

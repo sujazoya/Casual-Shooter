@@ -8,7 +8,7 @@ public class DatabaseManager : MonoBehaviour
 {
     public static DatabaseManager Instance;
 
-    private string apiURL = "https://script.google.com/macros/s/AKfycbz3WvA3ca12WwMbr4LRqQ9Zl_xTrRN9RsAZxRAwrStHdP_f2baVIbI05jtvT0fLqXUXbA/exec";
+    private string apiURL = "https://script.google.com/macros/s/AKfycbz3FVCJZ0FfWZIfkW8U5WCsYqMZYDf2ck5ifmxJKtyuq1yKkj_avZrRhnhII6F_ox4g2A/exec";
 
     private void Awake()
     {

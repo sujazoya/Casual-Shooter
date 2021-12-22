@@ -18,6 +18,7 @@ public class InHouseAdManager : MonoBehaviour
     public static bool show_inhouse_ad;
     [SerializeField] int adIndex=0;
     [HideInInspector] public bool apiConfirmed;
+    public int iha_starting_count;
     private void Awake()
     {
         if (Instance == null)
@@ -137,7 +138,8 @@ public class InHouseAdManager : MonoBehaviour
         JSONNode image3Link_info = JSON.Parse(snapshot)[6];
         JSONNode image4Link_info = JSON.Parse(snapshot)[7];
         show_inhouse_ad = GoogleSheetHandler.show_inhouse_ad;
-        ad_counts_we_have        = int.Parse(appLink_info["ad_counts_we_have"].Value.ToString());
+        iha_starting_count = GoogleSheetHandler.iha_starting_count;
+        ad_counts_we_have = GoogleSheetHandler.ad_counts_we_have;
         if (show_inhouse_ad == true)
         {
             GameObject InHouseAds = new GameObject();
@@ -145,7 +147,7 @@ public class InHouseAdManager : MonoBehaviour
             for (int i = 0; i < ad_counts_we_have; i++)
             {
                 GameObject myAd = new GameObject();
-                int num = i + 1;
+                int num = i + iha_starting_count;
                 string adName = "ad_" + num.ToString();
                 myAd.name = "myAd" + num.ToString();
                 InHouse_Ad newAd = myAd.AddComponent<InHouse_Ad>();
